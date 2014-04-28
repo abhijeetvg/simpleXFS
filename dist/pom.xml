@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>edu.umn.sxfs</groupId>
+    <artifactId>simpleXFS</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
+  <groupId>edu.umn.sxfs</groupId>
+  <artifactId>dist</artifactId>
+  <!--version>1.0-SNAPSHOT</version-->
+  <name>dist</name>
+  <packaging>pom</packaging>
+  <url>http://maven.apache.org</url>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>edu.umn.sxfs.peer</groupId>
+      <artifactId>peer</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>edu.umn.sxfs.server</groupId>
+      <artifactId>server</artifactId>
+      <version>${project.version}</version>
+    </dependency>  
+  </dependencies>
+  
+   <build>
+      <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                        <delete dir="target/simpleXFS-${project.version}"/>
+                        <delete dir="target/simpleXFS-${project.version}.tar.gz"/>
+
+                        <mkdir dir="target/simpleXFS-${project.version}"/>
+                        <mkdir dir="target/simpleXFS-${project.version}/lib"/>
+                        <mkdir dir="target/simpleXFS-${project.version}/bin"/>
+
+                        <copy todir="target/simpleXFS-${project.version}" includeEmptyDirs="false" flatten="false">
+                          <fileset dir="../">
+                            <include name="**/*" />
+                            <exclude name="build/**" />
+                            <exclude name="**/target/**" />
+                            <exclude name=".git/**" />
+                            <exclude name="tags" />
+                            <exclude name="**/.project" />
+                            <exclude name="**/.classpath" />
+                            <exclude name="**/.gitignore" />
+                            <exclude name="**/dist/**" />
+                          </fileset>
+                        </copy>
+
+                        <copy todir="target/simpleXFS-${project.version}" includeEmptyDirs="false" flatten="false">
+                          <fileset dir="../peer/target">
+                            <include name="*.jar" />
+                          </fileset>
+                          <fileset dir="../server/target">
+                            <include name="*.jar" />
+                          </fileset>
+                          <fileset dir="../common/target">
+                            <include name="*.jar" />
+                          </fileset>
+                        </copy>
+                        
+                        <copy todir="target/simpleXFS-${project.version}/bin" includeEmptyDirs="false" flatten="false">
+                          <fileset dir="src/bin">
+                            <include name="**" />
+                          </fileset>
+                        </copy>
+
+                        <tar destfile="target/simpleXFS-${project.version}.tar.gz" compression="gzip">
+                        <tarfileset dir="target/simpleXFS-${project.version}" prefix="simpleXFS-${project.version}" filemode="755">
+                          <include name="**/*.sh" />
+                        </tarfileset>
+                        <tarfileset dir="target/simpleXFS-${project.version}" prefix="simpleXFS-${project.version}">
+                          <include name="**/*"/>
+                          <exclude name="**/*.sh"/>
+                        </tarfileset>
+                        </tar>
+
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+ </build>
+  
+  
+</project>
