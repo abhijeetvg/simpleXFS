@@ -9,6 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import edu.umn.sxfs.common.constants.RMIConstants;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.validator.ContentValidator;
+import edu.umn.sxfs.peer.store.FileStore;
 import edu.umn.sxfs.server.TrackingServerImpl;
 
 /**
@@ -33,7 +34,7 @@ public class Peer {
 	private static int currentPeerPort = RMIConstants.RMI_DEFAULT_PORT;
 	private static TrackingServerImpl trackingServerRMIObjectHandle = null;
 
-	public static void main(String[] args) {
+	public static void start(String[] args) {
 		final String method = CLASS_NAME + ".main()";
 		
 		if(args.length != 4) {
@@ -65,6 +66,10 @@ public class Peer {
 			return;
 		}
 		trackingServerRMIPort = Integer.parseInt(args[3]);
+		
+		LogUtil.log(method, "Initializing fileStore");
+		FileStore.getInstance().initialize();
+		LogUtil.log(method, "DONE Initializing fileStore");
 		
 		System.setProperty("java.rmi.server.hostname", currentPeerIp);
 		
@@ -108,7 +113,15 @@ public class Peer {
 		LogUtil.log(method, "DONE Binding " + RMIConstants.PEER_SERVICE);
 	}
 	
-	public TrackingServerImpl getTrackingServerRMIObjectHandler() {
+	public static TrackingServerImpl getTrackingServerRMIObjectHandler() {
 		return trackingServerRMIObjectHandle;
+	}
+	
+	public static String getIp() {
+		return currentPeerIp;
+	}
+	
+	public static int getPort() {
+		return currentPeerPort;
 	}
 }

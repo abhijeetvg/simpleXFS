@@ -12,6 +12,9 @@ import edu.umn.sxfs.common.rmi.PeerRMIInterface;
 public final class PeerRMIInterfaceImpl implements PeerRMIInterface {
 
 	private static PeerRMIInterfaceImpl instance = null;
+	private static int load = 0;
+	
+	private static Object loadLock = new Object();
 	
 	private PeerRMIInterfaceImpl() {
 		if(instance != null) {
@@ -32,14 +35,21 @@ public final class PeerRMIInterfaceImpl implements PeerRMIInterface {
 	
 	@Override
 	public String download(String filename) throws RemoteException {
-		// TODO Auto-generated method stub
+		synchronized (loadLock) {
+			load++;
+		}
+		
+		synchronized (loadLock) {
+			load--;
+		}
 		return null;
 	}
 
 	@Override
 	public int getLoad() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+		synchronized (loadLock) {
+			return load;	
+		}
 	}
 
 	@Override

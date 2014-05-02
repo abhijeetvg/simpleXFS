@@ -9,7 +9,7 @@ import edu.umn.sxfs.common.validator.ContentValidator;
  * @author prashant
  *
  */
-public final class ServerInfo {
+public final class PeerInfo {
 	private String ip;
 	private int port;
 	private String bindingName;
@@ -20,7 +20,7 @@ public final class ServerInfo {
 	 * @param port
 	 * @throws IllegalArgumentException
 	 */
-	public ServerInfo(String ip, int port) throws IllegalIPException{
+	public PeerInfo(String ip, int port) throws IllegalIPException{
 		if(!ContentValidator.isValidIp(ip)) {
 			throw new IllegalIPException("Invalid Ip" + ip);
 		}
@@ -34,7 +34,7 @@ public final class ServerInfo {
 	 * @param port
 	 * @throws IllegalArgumentException
 	 */
-	public ServerInfo(String ip, String bindingName, int port) throws IllegalIPException{
+	public PeerInfo(String ip, String bindingName, int port) throws IllegalIPException{
 		if(!ContentValidator.isValidIp(ip)) {
 			throw new IllegalIPException("Invalid Ip" + ip);
 		}
@@ -77,7 +77,7 @@ public final class ServerInfo {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ServerInfo other = (ServerInfo) obj;
+		PeerInfo other = (PeerInfo) obj;
 		if (ip == null) {
 			if (other.ip != null)
 				return false;
