@@ -6,5 +6,6 @@ public final class RMIConstants {
 	}
 	
 	public static final String TRACKING_SERVER_SERVICE = "TrackingServerService";
+	public static final String PEER_SERVICE = "PeerService";
 	public static final int RMI_DEFAULT_PORT = 1099;
 }
