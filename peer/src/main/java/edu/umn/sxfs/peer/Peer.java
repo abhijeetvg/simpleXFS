@@ -9,7 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import edu.umn.sxfs.common.constants.RMIConstants;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.validator.ContentValidator;
-import edu.umn.sxfs.peer.store.FileStore;
+import edu.umn.sxfs.peer.file.FileStore;
 import edu.umn.sxfs.server.TrackingServerImpl;
 
 /**
@@ -33,42 +33,52 @@ public class Peer {
 	private static String currentPeerIp = null;
 	private static int currentPeerPort = RMIConstants.RMI_DEFAULT_PORT;
 	private static TrackingServerImpl trackingServerRMIObjectHandle = null;
+	
+	private Peer() {
+		throw new IllegalStateException("Cannot instantiate peer class"); 
+	}
 
-	public static void start(String[] args) {
-		final String method = CLASS_NAME + ".main()";
+	/**
+	 * Retursn false if the peer didnt start correctly.
+	 * @param args
+	 * @return
+	 */
+	public static boolean start(String[] args) {
+		final String method = CLASS_NAME + ".start()";
 		
-		if(args.length != 4) {
-			LogUtil.log(method, "Usage peer <current peer ip> <current peer port> <tracking server ip> <tracking server port>");
-			return;
+		if(args.length != 5) {
+			LogUtil.log(method, "Usage peer <current peer ip> <current peer port> <tracking server ip> <tracking server port> <local file store>");
+			return false;
 		}
 
 		// Current ip and port
 		if(!ContentValidator.isValidIp(args[0])) {
 			LogUtil.log(method, "Invalid ip:" + args[0]);
-			return;
+			return false;
 		}
 		currentPeerIp = args[0];
 		if(!ContentValidator.isValidPort(args[1])) {
 			LogUtil.log(method, "Invalid port:" + args[0]);
-			return;
+			return false;
 		}
 		currentPeerPort = Integer.parseInt(args[1]);
 		
 		// tracking server Ip and port
 		if(!ContentValidator.isValidIp(args[2])) {
 			LogUtil.log(method, "Invalid ip:" + args[2]);
-			return;
+			return false;
 		}
 		trackingServerIp = args[2];
 
 		if(!ContentValidator.isValidPort(args[3])) {
 			LogUtil.log(method, "Invalid port:" + args[3]);
-			return;
+			return false;
 		}
 		trackingServerRMIPort = Integer.parseInt(args[3]);
 		
 		LogUtil.log(method, "Initializing fileStore");
-		FileStore.getInstance().initialize();
+		FileStore.getInstance().initialize(args[4]);
+		FileStore.getInstance().printStore();
 		LogUtil.log(method, "DONE Initializing fileStore");
 		
 		System.setProperty("java.rmi.server.hostname", currentPeerIp);
@@ -111,6 +121,7 @@ public class Peer {
 			System.exit(1);
 		}
 		LogUtil.log(method, "DONE Binding " + RMIConstants.PEER_SERVICE);
+		return true;
 	}
 	
 	public static TrackingServerImpl getTrackingServerRMIObjectHandler() {
