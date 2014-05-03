@@ -28,6 +28,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>edu.umn.sxfs.server</groupId>
+      <artifactId>server</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>edu.umn.sxfs.common</groupId>
       <artifactId>common</artifactId>
       <version>${project.version}</version>

@@ -7,7 +7,7 @@ import java.util.Set;
 import edu.umn.sxfs.common.exception.IllegalIPException;
 import edu.umn.sxfs.common.exception.PeerNotConnectedException;
 import edu.umn.sxfs.common.server.PeerInfo;
-import edu.umn.sxfs.common.util.RMIUtil;
+import edu.umn.sxfs.peer.util.RMIUtil;
 
 /**
  * The interface object. This object that will connect the peer client and 
@@ -19,7 +19,7 @@ import edu.umn.sxfs.common.util.RMIUtil;
 
 public final class PeerServerInterfaceObject {
 
-	private PeerServerInterfaceObject instance = null;
+	private static PeerServerInterfaceObject instance = null;
 	
 	private PeerServerInterfaceObject() {
 		if(instance != null) {
@@ -27,7 +27,7 @@ public final class PeerServerInterfaceObject {
 		}
 	}
 	
-	public PeerServerInterfaceObject getInstance() {
+	public static PeerServerInterfaceObject getInstance() {
 		if(instance == null) {
 			synchronized (PeerServerInterfaceObject.class) {
 				if(instance == null) {

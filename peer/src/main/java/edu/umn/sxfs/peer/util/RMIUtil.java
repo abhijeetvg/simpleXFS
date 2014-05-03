@@ -1,4 +1,4 @@
-package edu.umn.sxfs.common.util;
+package edu.umn.sxfs.peer.util;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
