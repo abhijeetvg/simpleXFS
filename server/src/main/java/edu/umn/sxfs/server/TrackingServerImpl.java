@@ -1,5 +1,6 @@
 package edu.umn.sxfs.server;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -20,9 +21,11 @@ import edu.umn.sxfs.common.validator.ContentValidator;
  *
  * Created by Abhijeet on 4/28/2014.
  */
-public class TrackingServerImpl implements TrackingServer {
+public class TrackingServerImpl implements TrackingServer, Serializable {
 
-    private static final String CLASS_NAME = Server.class.getSimpleName();
+	private static final long serialVersionUID = 6294308753271868256L;
+
+	private static final String CLASS_NAME = Server.class.getSimpleName();
 
     /**
      * map: Server -> Set of Files
