@@ -1,4 +1,4 @@
-package edu.umn.sxfs.peer.store;
+package edu.umn.sxfs.peer.file;
 
 import java.io.File;
 import java.util.HashSet;
