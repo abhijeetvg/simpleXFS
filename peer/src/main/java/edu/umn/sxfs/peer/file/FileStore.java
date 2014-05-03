@@ -4,13 +4,15 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.umn.sxfs.peer.Peer;
+
 /**
  * Contains the list of files present in the directory.
  * @author prashant
  *
  */
 public final class FileStore {
-	private final String SRC_DIRECTORY = "~/5105/xfs/";
+	private final String SRC_DIRECTORY = "~/5105/xfs/" + Peer.getIp() + Peer.getPort();
 	private final Set<String> filenames = new HashSet<String>();
 	private static FileStore instance = null;
 	

@@ -51,6 +51,7 @@ public final class PeerServerInterfaceObject {
 			throw new PeerNotConnectedException("Cannot connect to peer : " + peerInfo );
 		}
 		try {
+			// TODO handle the return type
 			peerRMIInterfaceImplObject.download(filename);
 		} catch (RemoteException e) {
 			// TODO Depending on the cause of RemoteException throw appropriate exception or return false.

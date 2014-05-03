@@ -3,6 +3,8 @@ package edu.umn.sxfs.common.rmi;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import edu.umn.sxfs.common.fileio.FileMemoryObject;
+
 /**
  * RMI specification for Peers. Peers will communicate with each other to get
  * the files in the System. Specifies following three methods: <br>
@@ -24,7 +26,7 @@ public interface PeerRMIInterface extends Remote{
 	 * @throws RemoteException
 	 */
 	// TODO prashant discuss on the return type. Mostly will need a different object to store files.
-	public String download(String filename) throws RemoteException;
+	public FileMemoryObject download(String filename) throws RemoteException;
 
 	/**
 	 * Returns the number of threads running on the current server.
