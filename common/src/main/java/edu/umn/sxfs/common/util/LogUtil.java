@@ -1,6 +1,5 @@
 package edu.umn.sxfs.common.util;
 
-import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

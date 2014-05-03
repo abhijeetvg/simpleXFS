@@ -1,13 +1,9 @@
 package edu.umn.sxfs.peer.client.cli;
 
-import java.net.MalformedURLException;
-import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import edu.umn.sxfs.peer.client.exceptions.ClientGeneralException;
 import edu.umn.sxfs.peer.client.exceptions.ClientNullException;
-import edu.umn.sxfs.common.rmi.PeerRMIInterface;
 
 /**
  * Base class for all command types. One or more RMI methods are invoked by each command.

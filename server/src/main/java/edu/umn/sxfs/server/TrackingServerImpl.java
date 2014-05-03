@@ -1,20 +1,19 @@
 package edu.umn.sxfs.server;
 
-import edu.umn.sxfs.common.constants.RMIConstants;
-import edu.umn.sxfs.common.rmi.TrackingServer;
-import edu.umn.sxfs.common.server.PeerInfo;
-import edu.umn.sxfs.common.util.LogUtil;
-import edu.umn.sxfs.common.validator.ContentValidator;
-
 import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import edu.umn.sxfs.common.constants.RMIConstants;
+import edu.umn.sxfs.common.rmi.TrackingServer;
+import edu.umn.sxfs.common.server.PeerInfo;
+import edu.umn.sxfs.common.util.LogUtil;
+import edu.umn.sxfs.common.validator.ContentValidator;
 
 /**
  * Tracking Server implementation.
@@ -31,7 +30,6 @@ public class TrackingServerImpl implements TrackingServer {
     private Map<PeerInfo, Set<String>> metaData = new HashMap<PeerInfo, Set<String>>();
     private String rmiIP;
     private int rmiPort;
-    private TrackingServer server;
 
     private static TrackingServerImpl instance = null;
 
@@ -117,6 +115,6 @@ public class TrackingServerImpl implements TrackingServer {
             return;
         }
 
-        new TrackingServerImpl().getRawInstance().startServer(args);
+        TrackingServerImpl.getRawInstance().startServer(args);
     }
 }
