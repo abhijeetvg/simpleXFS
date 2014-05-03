@@ -50,6 +50,9 @@ public final class PeerServerInterfaceObject {
 	 * @throws PeerNotConnectedException 
 	 */
 	public String download(PeerInfo peerInfo, String filename) throws PeerNotConnectedException {
+		if(peerInfo == null) {
+			// TODO prashant use algorithm.. if peerinfo not available.
+		}
 		PeerRMIInterfaceImpl peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
 			throw new PeerNotConnectedException("Cannot connect to peer : " + peerInfo );
@@ -63,9 +66,9 @@ public final class PeerServerInterfaceObject {
 			e.printStackTrace();
 			return null;
 		}
-		String filename2 = file.getFilename();
-		String writeFileName = FileStore.getInstance().getFileStoreDirectory() + filename2;
-		FileMemoryObject fileObject = new FileMemoryObject(writeFileName, file.getBytecontents());
+		String newFileName = file.getFilename();
+		String writeFileCompletePathName = FileStore.getInstance().getFileStoreDirectory() + newFileName;
+		FileMemoryObject fileObject = new FileMemoryObject(writeFileCompletePathName, file.getBytecontents());
 		try {
 			FileIOUtil.writeToDisk(fileObject);
 		} catch (IOException e) {
@@ -73,7 +76,19 @@ public final class PeerServerInterfaceObject {
 			e.printStackTrace();
 			return null;
 		}
-		return writeFileName;
+		
+		// Add the new file to file store as well as the tracking server.
+		FileStore.getInstance().addFilename(newFileName);
+		try {
+			Peer.getTrackingServerRMIObjectHandler().updateFiles(new PeerInfo(Peer.getIp(), Peer.getPort()), FileStore.getInstance().getFilenames());
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalIPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return writeFileCompletePathName;
 	}
 	
 	public Set<PeerInfo> find (String filename) {

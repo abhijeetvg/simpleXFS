@@ -30,10 +30,14 @@ public class TrackingServerImpl implements TrackingServer {
     private Map<PeerInfo, Set<String>> metaData = new HashMap<PeerInfo, Set<String>>();
     private String rmiIP;
     private int rmiPort;
+    private static boolean isInitialized = false;
 
     private static TrackingServerImpl instance = null;
 
     private TrackingServerImpl() {
+    	if(instance != null) {
+    		throw new IllegalStateException("Cannot instantiate this class twice.");
+    	}
     }
 
     /**
@@ -51,7 +55,7 @@ public class TrackingServerImpl implements TrackingServer {
     }
 
     @Override
-    public Set<PeerInfo> find(String fileName) throws RemoteException {
+    public synchronized Set<PeerInfo> find(String fileName) throws RemoteException {
 
         Set <PeerInfo> servers = new HashSet<PeerInfo>();
 
@@ -65,11 +69,15 @@ public class TrackingServerImpl implements TrackingServer {
     }
 
     @Override
-    public void updateFiles(PeerInfo peerInfo, Set<String> files) throws RemoteException {
+    public synchronized void updateFiles(PeerInfo peerInfo, Set<String> files) throws RemoteException {
+        metaData.remove(peerInfo);
         metaData.put(peerInfo, files);
     }
 
-    public void startServer(String[] args) {
+    public synchronized void startServer(String[] args) {
+    	if(isInitialized) {
+    		return;
+    	}
         final String method = CLASS_NAME + ".startServer()";
 
         if (!ContentValidator.isValidIp(args[0])) {
@@ -98,7 +106,7 @@ public class TrackingServerImpl implements TrackingServer {
         }
 
         LogUtil.log(method, "DONE Binding " + RMIConstants.TRACKING_SERVER_SERVICE);
-
+        isInitialized = true;
     }
 
     /**

@@ -58,6 +58,10 @@ public final class FileStore {
 		return filenames;
 	}
 	
+	public synchronized boolean addFilename(String filename) {
+		return filenames.add(filename);
+	}
+	
 	public synchronized String getFileStoreDirectory() {
 		return fileStoreDirectory;
 	}
