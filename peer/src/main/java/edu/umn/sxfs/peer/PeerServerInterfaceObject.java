@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.umn.sxfs.common.exception.IllegalIPException;
 import edu.umn.sxfs.common.exception.PeerNotConnectedException;
 import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.RMIUtil;
@@ -58,15 +59,14 @@ public final class PeerServerInterfaceObject {
 		return true;
 	}
 	
-	// TODO change the set to set<PeerInfo> once the interface is changed on the server side.
-	public Set<String> find (String filename) {
+	public Set<PeerInfo> find (String filename) {
 		try {
 			return Peer.getTrackingServerRMIObjectHandler().find(filename);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new HashSet<String>();
+		return new HashSet<PeerInfo>();
 	}
 	
 	/**
@@ -78,7 +78,12 @@ public final class PeerServerInterfaceObject {
 		Set<String> filenames = new HashSet<String>();
 		filenames.add(filename);
 		try {
-			Peer.getTrackingServerRMIObjectHandler().updateFiles(Peer.getIp(), filenames);
+			try {
+				Peer.getTrackingServerRMIObjectHandler().updateFiles(new PeerInfo(Peer.getIp(), Peer.getPort()), filenames);
+			} catch (IllegalIPException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

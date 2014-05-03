@@ -2,6 +2,7 @@ package edu.umn.sxfs.server;
 
 import edu.umn.sxfs.common.constants.RMIConstants;
 import edu.umn.sxfs.common.rmi.TrackingServer;
+import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.validator.ContentValidator;
 
@@ -27,7 +28,7 @@ public class TrackingServerImpl implements TrackingServer {
     /**
      * map: Server -> Set of Files
      */
-    private Map<String, Set<String>> metaData = new HashMap<String, Set<String>>();
+    private Map<PeerInfo, Set<String>> metaData = new HashMap<PeerInfo, Set<String>>();
     private String rmiIP;
     private int rmiPort;
     private TrackingServer server;
@@ -52,11 +53,11 @@ public class TrackingServerImpl implements TrackingServer {
     }
 
     @Override
-    public Set<String> find(String fileName) throws RemoteException {
+    public Set<PeerInfo> find(String fileName) throws RemoteException {
 
-        Set <String> servers = new HashSet<String>();
+        Set <PeerInfo> servers = new HashSet<PeerInfo>();
 
-        for (String server : metaData.keySet()) {
+        for (PeerInfo server : metaData.keySet()) {
             if (metaData.get(server).contains(fileName)) {
                 servers.add(server);
             }
@@ -66,8 +67,8 @@ public class TrackingServerImpl implements TrackingServer {
     }
 
     @Override
-    public void updateFiles(String macID, Set<String> files) throws RemoteException {
-        metaData.put(macID, files);
+    public void updateFiles(PeerInfo peerInfo, Set<String> files) throws RemoteException {
+        metaData.put(peerInfo, files);
     }
 
     public void startServer(String[] args) {

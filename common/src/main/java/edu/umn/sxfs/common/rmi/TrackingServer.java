@@ -4,6 +4,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Set;
 
+import edu.umn.sxfs.common.server.PeerInfo;
+
 /**
  *
  * RMI specification for Tracking Server. Peers will communicate with this server to get
@@ -24,7 +26,7 @@ public interface TrackingServer extends Remote {
      * @return Set of Servers
      * @throws RemoteException
      */
-    Set<String> find(String fileName) throws RemoteException;
+    Set<PeerInfo> find(String fileName) throws RemoteException;
 
     /**
      * Update the set of files of a Server with ID <code>macID</code>.
@@ -33,6 +35,6 @@ public interface TrackingServer extends Remote {
      * @param files all the set of files that Server has.
      * @throws RemoteException
      */
-    void updateFiles(String macID, Set<String> files) throws RemoteException;
+    void updateFiles(PeerInfo peerInfo, Set<String> files) throws RemoteException;
 
 }
