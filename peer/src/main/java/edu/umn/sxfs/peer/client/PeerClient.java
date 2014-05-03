@@ -137,7 +137,10 @@ public class PeerClient {
                 throw new IllegalArgumentException("Invalid number of arguments. " + USAGE_HELP);
             }
 
-            Peer.start(args);
+            if (!Peer.start(args)) {
+                throw new RuntimeException("Peer Server could not be initialized.");
+            }
+
             LogUtil.log(method, "Peer started successfully.");
             LogUtil.log(method, "Starting Client.");
             PeerClient.getInstance().startShell();

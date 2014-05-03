@@ -50,7 +50,7 @@ public class DownloadCmd extends BaseCommand {
             }
 
             //TODO: This should return file path downloaded, change accordingly
-            LogUtil.log(method, "File download : " + PeerClient.getInstance().getClient().download(pInfo
+            LogUtil.log(method, "File downloaded: " + PeerClient.getInstance().getClient().download(pInfo
                     , getArgument(FILE_NAME_ARG)));
             LogUtil.log(method, "Download successful");
 
