@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import edu.umn.sxfs.common.fileio.FileMemoryObject;
 import edu.umn.sxfs.common.rmi.PeerRMIInterface;
 import edu.umn.sxfs.common.util.FileIOUtil;
+import edu.umn.sxfs.common.util.MD5CheckSumUtil;
 import edu.umn.sxfs.peer.file.FileStore;
 
 /**
@@ -66,8 +67,14 @@ public final class PeerRMIInterfaceImpl implements PeerRMIInterface {
 	}
 
 	@Override
-	public int getChecksum(String filename) throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+	public byte[] getChecksum(String filename) throws RemoteException {
+		String completeFileName = FileStore.getInstance().getFileStoreDirectory() + filename;
+		try {
+			return MD5CheckSumUtil.createChecksum(completeFileName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

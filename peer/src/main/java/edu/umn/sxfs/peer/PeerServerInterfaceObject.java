@@ -1,12 +1,16 @@
 package edu.umn.sxfs.peer;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
 
 import edu.umn.sxfs.common.exception.IllegalIPException;
 import edu.umn.sxfs.common.exception.PeerNotConnectedException;
+import edu.umn.sxfs.common.fileio.FileMemoryObject;
 import edu.umn.sxfs.common.server.PeerInfo;
+import edu.umn.sxfs.common.util.FileIOUtil;
+import edu.umn.sxfs.peer.file.FileStore;
 import edu.umn.sxfs.peer.util.RMIUtil;
 
 /**
@@ -45,19 +49,31 @@ public final class PeerServerInterfaceObject {
 	 * @return
 	 * @throws PeerNotConnectedException 
 	 */
-	public boolean download(PeerInfo peerInfo, String filename) throws PeerNotConnectedException {
+	public String download(PeerInfo peerInfo, String filename) throws PeerNotConnectedException {
 		PeerRMIInterfaceImpl peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
 			throw new PeerNotConnectedException("Cannot connect to peer : " + peerInfo );
 		}
+		FileMemoryObject file = null;
 		try {
-			// TODO handle the return type
-			peerRMIInterfaceImplObject.download(filename);
+			
+			 file = peerRMIInterfaceImplObject.download(filename);
 		} catch (RemoteException e) {
 			// TODO Depending on the cause of RemoteException throw appropriate exception or return false.
 			e.printStackTrace();
+			return null;
 		}
-		return true;
+		String filename2 = file.getFilename();
+		String writeFileName = FileStore.getInstance().getFileStoreDirectory() + filename2;
+		FileMemoryObject fileObject = new FileMemoryObject(writeFileName, file.getBytecontents());
+		try {
+			FileIOUtil.writeToDisk(fileObject);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return writeFileName;
 	}
 	
 	public Set<PeerInfo> find (String filename) {
@@ -100,7 +116,7 @@ public final class PeerServerInterfaceObject {
 	 * @return
 	 * @throws PeerNotConnectedException 
 	 */
-	public int getCheckSum(PeerInfo peerInfo, String filename) throws PeerNotConnectedException {
+	public byte[] getCheckSum(PeerInfo peerInfo, String filename) throws PeerNotConnectedException {
 		PeerRMIInterfaceImpl peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
 			throw new PeerNotConnectedException("cannot connect to Peer: " + peerInfo);
@@ -110,7 +126,7 @@ public final class PeerServerInterfaceObject {
 		} catch (RemoteException e) {
 			// TODO Depending on the cause of RemoteException throw appropriate exception or return false.
 		}
-		return -1;
+		return null;
 	}
 	
 	/**

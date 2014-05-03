@@ -41,5 +41,5 @@ public interface PeerRMIInterface extends Remote{
 	 * @return
 	 * @throws RemoteException
 	 */
-	public int getChecksum(String filename) throws RemoteException; 
+	public byte[] getChecksum(String filename) throws RemoteException; 
 }
