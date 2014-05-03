@@ -35,12 +35,11 @@ public final class LogUtil {
 		LogUtil.log(method, message);
 	}
 
-	public static void catchedRemoteException(RemoteException e) {
+	public static String causedBy(Exception e) {
 		if (null == e.getCause()) {
-			LogUtil.error("Remote Error: ", e.getMessage());
-		} else {
-			LogUtil.error("Remote Error: ", e.getCause().getMessage());
+			return e.getMessage();
 		}
 
+        return e.getCause().getMessage();
 	}
 }
