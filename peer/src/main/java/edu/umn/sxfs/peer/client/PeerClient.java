@@ -30,8 +30,7 @@ public class PeerClient {
     private static final String CMD_PROMPT = "\nSXFS-Client-1.0$ ";
     private static final String GOOD_BYE_MSG = "Good Bye!";
 
-    private static final String USAGE_HELP = "Usage: <current peer ip> <current peer port> <tracking server ip> " +
-            "<tracking server port> <peer_base_dir>";
+    private static final String USAGE_HELP = "Usage: <current peer ip> <current peer port> <properties config file>";
 
     private static PeerClient instance = null;
 
@@ -127,7 +126,7 @@ public class PeerClient {
 
         try {
 
-            if (5 != args.length) {
+            if (3 != args.length) {
                 throw new IllegalArgumentException("Invalid number of arguments. " + USAGE_HELP);
             }
 

@@ -8,6 +8,8 @@ import edu.umn.sxfs.common.util.FileIOUtil;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.util.MD5CheckSumUtil;
 import edu.umn.sxfs.peer.file.FileStore;
+import edu.umn.sxfs.peer.latency.PeerPeerLatencyStore;
+import edu.umn.sxfs.peer.latency.WrongPeerLatencyConfigFileException;
 
 public class TestPeer {
 	private static final String CLASS_NAME = TestPeer.class.getSimpleName(); 
@@ -61,6 +63,13 @@ public class TestPeer {
 				LogUtil.log(method, "CheckSums NOT equal");
 			}
 		}
+		try {
+			PeerPeerLatencyStore.getInstance().initialize(args[5]);
+		} catch (WrongPeerLatencyConfigFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		PeerPeerLatencyStore.getInstance().printLatencies();
 	}
 
 }

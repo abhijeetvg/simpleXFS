@@ -3,6 +3,7 @@ package edu.umn.sxfs.common.server;
 import java.io.Serializable;
 
 import edu.umn.sxfs.common.exception.IllegalIPException;
+import edu.umn.sxfs.common.exception.IllegalPeerException;
 import edu.umn.sxfs.common.validator.ContentValidator;
 
 
@@ -28,6 +29,28 @@ public final class PeerInfo implements Serializable{
 		}
 		this.ip = ip;
 		this.port = port;
+	}
+
+	/**
+	 * Creates the peerInfo from "_" (underscore) separated Ip-port string.
+	 * @param ipPort
+	 * @return
+	 * @throws IllegalPeerException 
+	 * @throws IllegalIPException 
+	 */
+	public static PeerInfo createPeerInfo(String ipPort) throws IllegalPeerException, IllegalIPException {
+		if(ipPort == null || ipPort.isEmpty()) {
+			throw new IllegalPeerException("Cannot create PeerInfo from empty string.");
+		}
+		String[] split = ipPort.split("_");
+		if(split == null || split.length != 2) {
+			throw new IllegalPeerException("Illegal IP_PORT combination in the string:" + ipPort);
+		}
+		if(!ContentValidator.isValidPort(split[1])) {
+			throw new IllegalPeerException("Port : " + split[1] + " not valid in IP_PORT string: " + ipPort);
+		}
+		int newPort = Integer.parseInt(split[1]);
+		return new PeerInfo(split[0], newPort);
 	}
 	
 	public String getIp() {

@@ -1,19 +1,19 @@
 package edu.umn.sxfs.common.exception;
 
 /**
- * Thrown when the server has not joined.
+ * Thrown when illegal peer.
  * @author prashant
  *
  */
-public class IllegalServerException extends Exception {
+public class IllegalPeerException extends Exception {
 
 	private static final long serialVersionUID = 618476407454525907L;
 
-	public IllegalServerException() {
+	public IllegalPeerException() {
 		super();
 	}
 	
-	public IllegalServerException(String s) {
+	public IllegalPeerException(String s) {
 		super(s);
 	}
 }
