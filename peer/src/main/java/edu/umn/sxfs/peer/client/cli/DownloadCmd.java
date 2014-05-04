@@ -9,6 +9,9 @@ import edu.umn.sxfs.peer.client.PeerClient;
 import edu.umn.sxfs.peer.client.exceptions.ClientGeneralException;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
@@ -33,28 +36,48 @@ public class DownloadCmd extends BaseCommand {
 
         final String method = CLASS_NAME + ".execute()";
 
-        try {
+        Runnable task = new Runnable() {
+			@Override
+			public void run() {
+		        try {
+					download(method);
+				} catch (ClientGeneralException e) {
+					exceptionHandler(e);
+				}
+				
+			}
 
-            PeerInfo pInfo = null;
-            if (argExists(PEER_IP_ARG)) {
-                try {
-                    pInfo = new PeerInfo(getArgument(PEER_IP_ARG), Integer.parseInt(getArgument(PEER_PORT_ARG)));
-                } catch (IllegalIPException e) {
-                    throw new ClientGeneralException(LogUtil.causedBy(e));
-                }
-            }
+			private void download(final String method)
+					throws ClientGeneralException {
+				try {
+		            PeerInfo pInfo = null;
+		            if (argExists(PEER_IP_ARG)) {
+		                try {
+		                    pInfo = new PeerInfo(getArgument(PEER_IP_ARG), Integer.parseInt(getArgument(PEER_PORT_ARG)));
+		                } catch (IllegalIPException e) {
+		                    throw new ClientGeneralException(LogUtil.causedBy(e));
+		                }
+		            }
 
-            //TODO: This should return file path downloaded, change accordingly
-            LogUtil.log(method, "File downloaded: " + PeerClient.getInstance().getClient().download(pInfo
-                    , getArgument(FILE_NAME_ARG)));
-            LogUtil.log(method, "Download successful");
+		            LogUtil.log(method, "File downloaded: " + PeerClient.getInstance().getClient().download(pInfo
+		                    , getArgument(FILE_NAME_ARG)));
+		            LogUtil.log(method, "Download successful");
 
-        } catch (PeerNotConnectedException e) {
-            throw new ClientGeneralException(LogUtil.causedBy(e));
-        } catch (TrackingServerNotConnectedException e) {
-        	throw new ClientGeneralException(LogUtil.causedBy(e));
-        }
+		        } catch (PeerNotConnectedException e) {
+		            throw new ClientGeneralException(LogUtil.causedBy(e));
+		        } catch (TrackingServerNotConnectedException e) {
+		        	throw new ClientGeneralException(LogUtil.causedBy(e));
+		        }
+			}
+		};
+		
+		ExecutorService service = Executors.newFixedThreadPool(100);
+		service.submit(task);
 
         return true;
+    }
+    
+    private void exceptionHandler(ClientGeneralException ex) {
+    	
     }
 }
