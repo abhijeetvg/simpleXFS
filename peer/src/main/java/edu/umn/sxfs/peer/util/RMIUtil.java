@@ -6,7 +6,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 import edu.umn.sxfs.common.constants.RMIConstants;
-import edu.umn.sxfs.peer.PeerRMIInterfaceImpl;
+import edu.umn.sxfs.common.rmi.PeerRMIInterface;
 
 /**
  * Util functions for RMI connections and get the RMI objects for given ip and
@@ -30,11 +30,11 @@ public final class RMIUtil {
 	 * @param port
 	 * @return
 	 */
-	public static PeerRMIInterfaceImpl getPeerRMIInterfaceImplObject(String ip,
+	public static PeerRMIInterface getPeerRMIInterfaceImplObject(String ip,
 			int port) {
-		PeerRMIInterfaceImpl peerObject = null;
+		PeerRMIInterface peerObject = null;
 		try {
-			peerObject = (PeerRMIInterfaceImpl) Naming
+			peerObject = (PeerRMIInterface) Naming
 					.lookup("rmi://" + ip + ":"
 							+ port + "/"
 							+ RMIConstants.PEER_SERVICE);
