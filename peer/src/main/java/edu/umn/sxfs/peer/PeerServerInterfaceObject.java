@@ -53,7 +53,7 @@ public final class PeerServerInterfaceObject {
 		if(peerInfo == null) {
 			// TODO prashant use algorithm.. if peerinfo not available.
 		}
-		PeerRMIInterfaceImpl peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
+		PeerRMIInterfaceImpl peerRMIInterfaceImplObject = (PeerRMIInterfaceImpl) RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
 			throw new PeerNotConnectedException("Cannot connect to peer : " + peerInfo );
 		}
@@ -132,7 +132,7 @@ public final class PeerServerInterfaceObject {
 	 * @throws PeerNotConnectedException 
 	 */
 	public byte[] getCheckSum(PeerInfo peerInfo, String filename) throws PeerNotConnectedException {
-		PeerRMIInterfaceImpl peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
+		PeerRMIInterfaceImpl peerRMIInterfaceImplObject = (PeerRMIInterfaceImpl) RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
 			throw new PeerNotConnectedException("cannot connect to Peer: " + peerInfo);
 		}
@@ -151,7 +151,7 @@ public final class PeerServerInterfaceObject {
 	 * @throws PeerNotConnectedException 
 	 */
 	public int getLoad(PeerInfo peerInfo) throws PeerNotConnectedException {
-		PeerRMIInterfaceImpl peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
+		PeerRMIInterfaceImpl peerRMIInterfaceImplObject = (PeerRMIInterfaceImpl) RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
 			throw new PeerNotConnectedException("cannot connect to Peer: " + peerInfo);
 		}
