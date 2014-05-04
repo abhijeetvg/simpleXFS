@@ -18,9 +18,9 @@ public class Server {
 	public static void main(String[] args) {
 		final String method = CLASS_NAME + ".main()";
 
-		if (3 != args.length) {
+		if (2 != args.length) {
             LogUtil.log(method, "Invalid cli arguments. Usage server <server ip> " +
-                    "<server rmi port> <Configuration filename>");
+                    "<server rmi port>");
             return;
         }
 		
