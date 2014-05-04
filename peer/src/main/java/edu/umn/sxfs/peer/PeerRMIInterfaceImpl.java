@@ -7,10 +7,12 @@ import java.rmi.server.UnicastRemoteObject;
 
 import edu.umn.sxfs.common.fileio.FileMemoryObject;
 import edu.umn.sxfs.common.rmi.PeerRMIInterface;
+import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.FileIOUtil;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.util.MD5CheckSumUtil;
 import edu.umn.sxfs.peer.file.FileStore;
+import edu.umn.sxfs.peer.latency.PeerPeerLatencyStore;
 
 /**
  * The implementation of the PeerRMIInterface.
@@ -50,7 +52,7 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 	}
 	
 	@Override
-	public FileMemoryObject download(String filename) throws RemoteException {
+	public FileMemoryObject download(PeerInfo requesterPeerInfo, String filename) throws RemoteException {
 		synchronized (loadLock) {
 			load++;
 		}
@@ -62,6 +64,13 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 			 readFileMemoryObject = FileIOUtil.readFile(FileStore.getInstance().getFileStoreDirectory() + filename);
 		}catch(IOException ex){
 			throw new RemoteException("IOException", ex);
+		}
+		
+		try {
+			Thread.sleep(PeerPeerLatencyStore.getInstance().getLatency(Peer.getCurrentPeerInfo(), requesterPeerInfo));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		synchronized (loadLock) {
 			load--;

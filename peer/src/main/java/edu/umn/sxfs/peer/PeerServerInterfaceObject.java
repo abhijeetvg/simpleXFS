@@ -12,6 +12,7 @@ import edu.umn.sxfs.common.rmi.PeerRMIInterface;
 import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.FileIOUtil;
 import edu.umn.sxfs.common.util.MD5CheckSumUtil;
+import edu.umn.sxfs.peer.client.PeerClient;
 import edu.umn.sxfs.peer.file.FileStore;
 import edu.umn.sxfs.peer.latency.AlgorithmFactory;
 import edu.umn.sxfs.peer.util.RMIUtil;
@@ -63,23 +64,26 @@ public final class PeerServerInterfaceObject {
 				throw new TrackingServerNotConnectedException("Cannot connect to the tracking server");
 			}
 			peerInfo = AlgorithmFactory.getAlgorithm(PeerConfig.getPeerAlgorithm(), peerInfo, availablePeerInfos).getDestinationPeerInfo();
+			PeerClient.printOnShell("Downloading file: " + filename + " from " + peerInfo);
 		}
+		
 		PeerRMIInterface peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
 			throw new PeerNotConnectedException("Cannot connect to peer : " + peerInfo );
 		}
-		FileMemoryObject file = null;
+		FileMemoryObject downloadedFileMemoryObject = null;
+		PeerClient.printOnShell("Calling RMI call for download on " + peerInfo);
 		try {
-			
-			 file = peerRMIInterfaceImplObject.download(filename);
+			 downloadedFileMemoryObject = peerRMIInterfaceImplObject.download(Peer.getCurrentPeerInfo(), filename);
 		} catch (RemoteException e) {
 			// TODO Depending on the cause of RemoteException throw appropriate exception or return false.
 			e.printStackTrace();
 			return null;
 		}
-		String newFileName = file.getFilename();
+		String newFileName = downloadedFileMemoryObject.getFilename();
 		String writeFileCompletePathName = FileStore.getInstance().getFileStoreDirectory() + newFileName;
-		FileMemoryObject fileObject = new FileMemoryObject(writeFileCompletePathName, file.getBytecontents());
+		FileMemoryObject fileObject = new FileMemoryObject(writeFileCompletePathName, downloadedFileMemoryObject.getBytecontents());
+		PeerClient.printOnShell("Writing  " + writeFileCompletePathName + " to local disk");
 		try {
 			FileIOUtil.writeToDisk(fileObject);
 		} catch (IOException e) {
@@ -88,6 +92,7 @@ public final class PeerServerInterfaceObject {
 			return null;
 		}
 		
+		PeerClient.printOnShell("Adding the filename in tracking server");
 		// Add the new file to file store as well as the tracking server.
 		FileStore.getInstance().addFilename(newFileName);
 		try {
@@ -95,7 +100,8 @@ public final class PeerServerInterfaceObject {
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
+		PeerClient.printOnShell("Done Download");
 		return writeFileCompletePathName;
 	}
 	

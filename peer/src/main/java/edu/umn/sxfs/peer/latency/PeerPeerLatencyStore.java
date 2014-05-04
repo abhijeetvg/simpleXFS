@@ -114,6 +114,10 @@ public final class PeerPeerLatencyStore {
 		return peerPeerLatencyMap.get(peerInfo);
 	}
 	
+	public synchronized Long getLatency(PeerInfo peerInfo1, PeerInfo peerInfo2) {
+		return peerPeerLatencyMap.get(peerInfo1).get(peerInfo2);
+	}
+	
 	/**
 	 * Prints latencies as PeerInfo1, PeerInfo2, latency triplets.
 	 * @param peerInfo

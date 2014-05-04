@@ -58,8 +58,8 @@ public class DownloadCmd extends BaseCommand {
 					LogUtil.info("\n\nFile downloaded: " + PeerClient.getInstance().getClient().download(pInfo
 		                    , filename));
 		            long time =  (long)((System.nanoTime() - start)/Math.pow(10,6));
-		            LogUtil.info("Download successful for (" + filename + ") in " + time + "ms");
-		            PeerClient.printCMD();
+		            String message = "Download successful for (" + filename + ") in " + time + "ms";
+		            PeerClient.printOnShell(message);
 
 		        } catch (PeerNotConnectedException e) {
 		            throw new ClientGeneralException(LogUtil.causedBy(e));

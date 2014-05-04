@@ -152,7 +152,12 @@ public class PeerClient {
 
     }
     
-    public static void printCMD() {
+    private static void printCMD() {
     	System.out.print(CMD_PROMPT);    	
+    }
+    
+    public static synchronized void printOnShell(String msg) {
+    	System.out.println(msg);
+    	System.out.print(CMD_PROMPT);
     }
 }
