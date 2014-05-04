@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.umn.sxfs.common.server.PeerInfo;
+import edu.umn.sxfs.peer.client.PeerClient;
 
 /**
  * This is basic algorithm that returns the node with lowest latency.
@@ -18,6 +19,7 @@ public final class BasicAlgorithm extends BaseAlgorithm {
 
 	@Override
 	public PeerInfo getDestinationPeerInfo() {
+		PeerClient.printOnShell("Selecting peerinfo for : " + getPeerInfo());
 		Set<PeerInfo> availablePeerInfos = getAvailablePeerInfos();
 		Map<PeerInfo, Long> latencies = PeerPeerLatencyStore.getInstance().getLatencies(getPeerInfo());
 		Long lowestLatency = Long.MAX_VALUE;
@@ -29,6 +31,7 @@ public final class BasicAlgorithm extends BaseAlgorithm {
 				minLatencyPeerInfo = peerInfo;
 			}
 		}
+		PeerClient.printOnShell("Selected peerInfo : " + minLatencyPeerInfo);
 		return minLatencyPeerInfo;
 	}
 

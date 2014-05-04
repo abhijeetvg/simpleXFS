@@ -57,6 +57,7 @@ public final class PeerServerInterfaceObject {
 	public String download(PeerInfo peerInfo, String filename) throws PeerNotConnectedException, TrackingServerNotConnectedException {
 		if(peerInfo == null) {
 			// if peerInfo null decide the peer based on algorithm.
+			PeerClient.printOnShell("PeerInfo is null. Hence will decide the peer based on peer selection algorithm.");
 			Set<PeerInfo> availablePeerInfos = null;
 			try {
 				 availablePeerInfos = Peer.getTrackingServerRMIObjectHandler().find(filename);
@@ -64,7 +65,7 @@ public final class PeerServerInterfaceObject {
 				throw new TrackingServerNotConnectedException("Cannot connect to the tracking server");
 			}
 			peerInfo = AlgorithmFactory.getAlgorithm(PeerConfig.getPeerAlgorithm(), peerInfo, availablePeerInfos).getDestinationPeerInfo();
-			PeerClient.printOnShell("Downloading file: " + filename + " from " + peerInfo);
+			PeerClient.printOnShell("Downloading file: " + filename + " from selected peer: " + peerInfo);
 		}
 		
 		PeerRMIInterface peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
