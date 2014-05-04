@@ -64,7 +64,7 @@ public final class PeerServerInterfaceObject {
 			} catch (RemoteException e) {
 				throw new TrackingServerNotConnectedException("Cannot connect to the tracking server");
 			}
-			peerInfo = AlgorithmFactory.getAlgorithm(PeerConfig.getPeerAlgorithm(), peerInfo, availablePeerInfos).getDestinationPeerInfo();
+			peerInfo = AlgorithmFactory.getAlgorithm(PeerConfig.getPeerAlgorithm(), Peer.getCurrentPeerInfo(), availablePeerInfos).getDestinationPeerInfo();
 			PeerClient.printOnShell("Downloading file: " + filename + " from selected peer: " + peerInfo);
 		}
 		
