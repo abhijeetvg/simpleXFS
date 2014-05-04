@@ -55,6 +55,7 @@ public class Peer {
 			return false;
 		}
 
+		LogUtil.log(method, "Reading properties file : "+ args[2]);
 		try {
 			PeerConfig.loadProperties(args[2]);
 		} catch (FileNotFoundException e2) {
@@ -66,6 +67,7 @@ public class Peer {
 					+ ". Exiting.");
 			System.exit(1);
 		}
+		LogUtil.log(method, "DONE Reading properties file : "+ args[2]);
 		
 		// Current ip and port
 		if(!ContentValidator.isValidIp(args[0])) {
