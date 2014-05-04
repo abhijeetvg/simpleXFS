@@ -87,11 +87,11 @@ public class PeerClient {
 
         try {
 
-            System.out.print(CMD_PROMPT);
+            printCMD();
 
             while ((cmd = in.readLine()) != null) {
                 if (cmd.isEmpty() || cmd.startsWith("#")) {
-                    System.out.print(CMD_PROMPT);
+                    printCMD();
                     continue;
                 }
 
@@ -102,10 +102,10 @@ public class PeerClient {
 
                 executeCmd(cmd);
 
-                System.out.print(CMD_PROMPT);
+                printCMD();
             }
 
-            System.out.print(CMD_PROMPT);
+            printCMD();
         } finally {
             LogUtil.info(GOOD_BYE_MSG);
         }
@@ -150,5 +150,9 @@ public class PeerClient {
             LogUtil.log(method, LogUtil.causedBy(e));
         }
 
+    }
+    
+    public static void printCMD() {
+    	System.out.print(CMD_PROMPT);    	
     }
 }
