@@ -24,9 +24,6 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 	private static final long serialVersionUID = -4387586179613570710L;
 	private final static String CLASS_NAME = PeerRMIInterfaceImpl.class.getSimpleName(); 
 	private static PeerRMIInterfaceImpl instance = null;
-	private static int load = 0;
-	
-	private static Object loadLock = new Object();
 	
 	private PeerRMIInterfaceImpl() throws RemoteException{
 		if(instance != null) {
@@ -53,9 +50,7 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 	
 	@Override
 	public FileMemoryObject download(PeerInfo requesterPeerInfo, String filename) throws RemoteException {
-		synchronized (loadLock) {
-			load++;
-		}
+		LoadCounter.getLoad().increaseLoad();
 		if(!FileStore.getInstance().containsFile(filename)) {
 			throw new RemoteException("File : "  + filename +" not found.", new FileNotFoundException());
 		}
@@ -69,20 +64,15 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 		try {
 			Thread.sleep(PeerPeerLatencyStore.getInstance().getLatency(Peer.getCurrentPeerInfo(), requesterPeerInfo));
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RemoteException("Got interrupetedException while waiting.",e);
 		}
-		synchronized (loadLock) {
-			load--;
-		}
+		LoadCounter.getLoad().increaseLoad();
 		return new FileMemoryObject(filename, readFileMemoryObject.getBytecontents());
 	}
 
 	@Override
 	public int getLoad() throws RemoteException {
-		synchronized (loadLock) {
-			return load;	
-		}
+		return LoadCounter.getLoad().value();
 	}
 
 	@Override
@@ -91,9 +81,7 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 		try {
 			return MD5CheckSumUtil.createChecksum(completeFileName);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RemoteException("Got IOException", e);
 		}
-		return null;
 	}
 }

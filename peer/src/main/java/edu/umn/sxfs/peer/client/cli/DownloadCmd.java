@@ -9,6 +9,7 @@ import edu.umn.sxfs.common.exception.PeerNotConnectedException;
 import edu.umn.sxfs.common.exception.TrackingServerNotConnectedException;
 import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.LogUtil;
+import edu.umn.sxfs.peer.LoadCounter;
 import edu.umn.sxfs.peer.client.PeerClient;
 import edu.umn.sxfs.peer.client.exceptions.ClientGeneralException;
 
@@ -33,19 +34,22 @@ public class DownloadCmd extends BaseCommand {
         Runnable task = new Runnable() {
 			@Override
 			public void run() {
+				LoadCounter.getLoad().increaseLoad();
 		        try {
 					download();
 				} catch (ClientGeneralException e) {
 					exceptionHandler(e);
 				}
-				
+		        LoadCounter.getLoad().decreaseLoad();
 			}
 
 			private void download()
 					throws ClientGeneralException {
 				try {
 					long start = System.nanoTime();
+					String filename = getArgument(FILE_NAME_ARG);
 		            PeerInfo pInfo = null;
+		            LogUtil.info("Downloading : (" + filename + ")");
 		            if (argExists(PEER_IP_ARG)) {
 		                try {
 		                    pInfo = new PeerInfo(getArgument(PEER_IP_ARG), Integer.parseInt(getArgument(PEER_PORT_ARG)));
@@ -53,8 +57,8 @@ public class DownloadCmd extends BaseCommand {
 		                    throw new ClientGeneralException(LogUtil.causedBy(e));
 		                }
 		            }
-
-		            String filename = getArgument(FILE_NAME_ARG);
+		            LogUtil.info("Downloading : (" + filename + ")  on peer:" + pInfo);
+		            
 					LogUtil.info("\n\nFile downloaded: " + PeerClient.getInstance().getClient().download(pInfo
 		                    , filename));
 		            long time =  (long)((System.nanoTime() - start)/Math.pow(10,6));
