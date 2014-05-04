@@ -1,5 +1,7 @@
 package edu.umn.sxfs.common.server;
 
+import java.io.Serializable;
+
 import edu.umn.sxfs.common.exception.IllegalIPException;
 import edu.umn.sxfs.common.validator.ContentValidator;
 
@@ -9,7 +11,8 @@ import edu.umn.sxfs.common.validator.ContentValidator;
  * @author prashant
  *
  */
-public final class PeerInfo {
+public final class PeerInfo implements Serializable{
+	private static final long serialVersionUID = -5998701872155160560L;
 	private String ip;
 	private int port;
 	private String bindingName;
