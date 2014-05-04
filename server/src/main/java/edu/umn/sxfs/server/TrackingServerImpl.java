@@ -56,20 +56,22 @@ public class TrackingServerImpl extends UnicastRemoteObject implements TrackingS
 
     @Override
     public synchronized Set<PeerInfo> find(String fileName) throws RemoteException {
-
+    	final String method = CLASS_NAME + ".find()";
         Set <PeerInfo> servers = new HashSet<PeerInfo>();
-
+        LogUtil.log(method, "Finding filename: " + fileName);
         for (PeerInfo server : metaData.keySet()) {
             if (metaData.get(server).contains(fileName)) {
                 servers.add(server);
             }
         }
-
+        LogUtil.log(method, "Returning Servers : " + servers + " for filename: " + fileName);	
         return servers;
     }
 
     @Override
     public synchronized void updateFiles(PeerInfo peerInfo, Set<String> files) throws RemoteException {
+    	final String method = CLASS_NAME + ".updateFiles()";
+    	LogUtil.log(method, "Updating files : " + files + " for PeerInfo: " + peerInfo);
         metaData.remove(peerInfo);
         metaData.put(peerInfo, files);
     }

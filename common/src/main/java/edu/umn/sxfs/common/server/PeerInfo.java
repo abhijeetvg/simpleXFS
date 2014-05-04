@@ -15,7 +15,6 @@ public final class PeerInfo implements Serializable{
 	private static final long serialVersionUID = -5998701872155160560L;
 	private String ip;
 	private int port;
-	private String bindingName;
 	
 	/**
 	 * This will constructor will throw {@link IllegalArgumentException} if the ip is not valid
@@ -31,21 +30,6 @@ public final class PeerInfo implements Serializable{
 		this.port = port;
 	}
 	
-	/**
-	 * This will constructor will throw {@link IllegalArgumentException} if the ip is not valid
-	 * @param ip
-	 * @param port
-	 * @throws IllegalArgumentException
-	 */
-	public PeerInfo(String ip, String bindingName, int port) throws IllegalIPException{
-		if(!ContentValidator.isValidIp(ip)) {
-			throw new IllegalIPException("Invalid Ip" + ip);
-		}
-		this.ip = ip;
-		this.bindingName = bindingName;
-		this.port = port;
-	}
-	
 	public String getIp() {
 		return ip;
 	}
@@ -54,13 +38,9 @@ public final class PeerInfo implements Serializable{
 		return port;
 	}
 	
-	public String getBindingName() {
-		return bindingName;
-	}
-	
 	@Override
 	public String toString() {
-		return ip + ":" + bindingName + ":" + port;
+		return ip + ":" + port;
 	}
 
 	@Override
@@ -90,5 +70,4 @@ public final class PeerInfo implements Serializable{
 			return false;
 		return true;
 	}
-	
 }
