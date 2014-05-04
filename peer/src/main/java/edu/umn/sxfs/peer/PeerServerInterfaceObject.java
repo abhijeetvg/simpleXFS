@@ -11,6 +11,7 @@ import edu.umn.sxfs.common.fileio.FileMemoryObject;
 import edu.umn.sxfs.common.rmi.PeerRMIInterface;
 import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.FileIOUtil;
+import edu.umn.sxfs.common.util.MD5CheckSumUtil;
 import edu.umn.sxfs.peer.file.FileStore;
 import edu.umn.sxfs.peer.util.RMIUtil;
 
@@ -134,6 +135,13 @@ public final class PeerServerInterfaceObject {
 	 * @throws PeerNotConnectedException 
 	 */
 	public byte[] getCheckSum(PeerInfo peerInfo, String filename) throws PeerNotConnectedException {
+		if(peerInfo == null) {
+			try {
+				return MD5CheckSumUtil.createChecksum(FileStore.getInstance().getFileStoreDirectory() + filename);
+			} catch (IOException e) {
+				return null;
+			}
+		}
 		PeerRMIInterface peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
 			throw new PeerNotConnectedException("cannot connect to Peer: " + peerInfo);
