@@ -28,11 +28,6 @@ public class FindCmd extends BaseCommand {
 
         final String method = CLASS_NAME + ".execute()";
 
-        PeerClient cli = PeerClient.getInstance();
-        if (null == cli.getClient()) {
-            throw new ClientGeneralException(CommandConstants.ERR_CLIENT_NULL);
-        }
-
         LogUtil.log(method, "file present on Servers: " + PeerClient.getInstance().getClient()
                 .find(getArgument(FILE_NAME_ARG)));
         return true;

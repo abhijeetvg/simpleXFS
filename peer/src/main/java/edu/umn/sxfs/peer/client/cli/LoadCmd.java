@@ -31,11 +31,6 @@ public class LoadCmd extends BaseCommand {
 
         final String method = CLASS_NAME + ".execute()";
 
-        PeerClient cli = PeerClient.getInstance();
-        if (null == cli.getClient()) {
-            throw new ClientGeneralException(CommandConstants.ERR_CLIENT_NULL);
-        }
-
         try {
 
             PeerInfo pInfo = null;

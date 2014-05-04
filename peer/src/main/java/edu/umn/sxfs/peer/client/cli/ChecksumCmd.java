@@ -4,7 +4,6 @@ import edu.umn.sxfs.common.exception.IllegalIPException;
 import edu.umn.sxfs.common.exception.PeerNotConnectedException;
 import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.peer.client.PeerClient;
-import edu.umn.sxfs.peer.client.constants.CommandConstants;
 import edu.umn.sxfs.peer.client.exceptions.ClientGeneralException;
 import edu.umn.sxfs.common.util.LogUtil;
 
@@ -32,11 +31,6 @@ public class ChecksumCmd extends BaseCommand {
     public boolean execute() throws RemoteException, ClientGeneralException  {
 
         final String method = CLASS_NAME + ".execute()";
-
-        PeerClient cli = PeerClient.getInstance();
-        if (null == cli.getClient()) {
-            throw new ClientGeneralException(CommandConstants.ERR_CLIENT_NULL);
-        }
 
         try {
 

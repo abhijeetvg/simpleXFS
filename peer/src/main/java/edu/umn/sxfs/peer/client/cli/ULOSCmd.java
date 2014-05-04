@@ -27,11 +27,6 @@ public class ULOSCmd extends BaseCommand {
 
         final String method = CLASS_NAME + ".execute()";
 
-        PeerClient cli = PeerClient.getInstance();
-        if (null == cli.getClient()) {
-            throw new ClientGeneralException(CommandConstants.ERR_CLIENT_NULL);
-        }
-
         LogUtil.log(method, "Update list on servers: " + PeerClient.getInstance().getClient()
                 .updateListOnServer(getArgument(FILE_NAME_ARG)));
         return true;
