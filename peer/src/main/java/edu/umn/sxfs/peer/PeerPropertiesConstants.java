@@ -1,5 +1,7 @@
 package edu.umn.sxfs.peer;
 
+import edu.umn.sxfs.peer.latency.AlgorithmFactory;
+
 
 public final class PeerPropertiesConstants {
 	private PeerPropertiesConstants() {
@@ -15,6 +17,5 @@ public final class PeerPropertiesConstants {
 	
 	
 	public static final int DEFAULT_LOAD = 2;
-	public static final String BASE_ALGORITHM = "baseAlgorithm";
-	public static final String DEFAULT_PEER_ALGORITHM = BASE_ALGORITHM;
+	public static final String DEFAULT_PEER_ALGORITHM = AlgorithmFactory.BASIC_ALGORITHM;
 }
