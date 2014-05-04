@@ -7,11 +7,12 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 import edu.umn.sxfs.common.constants.RMIConstants;
+import edu.umn.sxfs.common.exception.IllegalIPException;
 import edu.umn.sxfs.common.rmi.TrackingServer;
+import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.validator.ContentValidator;
 import edu.umn.sxfs.peer.file.FileStore;
-import edu.umn.sxfs.server.TrackingServerImpl;
 
 /**
  * The starting point for the peer server. 
@@ -106,6 +107,22 @@ public class Peer {
 			System.exit(1);
 		}
 		LogUtil.log(method, "DONE getting the trackingServerObject");
+		
+		LogUtil.log(method, "Updating initial file list on the server");
+		try {
+			trackingServerRMIObjectHandle.updateFiles(new PeerInfo(
+					currentPeerIp, currentPeerPort), FileStore.getInstance()
+					.getFilenames());
+		} catch (RemoteException e1) {
+			LogUtil.log(method, "Got exception " + e1.getMessage()
+					+ ". Exiting.");
+			System.exit(1);
+		} catch (IllegalIPException e1) {
+			LogUtil.log(method, "Got exception " + e1.getMessage()
+					+ ". Exiting.");
+			System.exit(1);
+		}
+		LogUtil.log(method, "DONE Updating initial file list on the server");
 		
 		LogUtil.log(method, "Binding the current peer to RMI at " + currentPeerIp + ":" + currentPeerPort);
 		try {
