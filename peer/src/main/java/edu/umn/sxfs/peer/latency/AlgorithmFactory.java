@@ -11,7 +11,7 @@ import edu.umn.sxfs.common.server.PeerInfo;
  */
 public final class AlgorithmFactory {
 	
-	private static final String BASIC_ALGORITHM = "basicAlgorithm"; 
+	public static final String BASIC_ALGORITHM = "basicAlgorithm"; 
 	
 	public static BaseAlgorithm getAlgorithm(String key, PeerInfo peerInfo, Set<PeerInfo> availablePeerInfos) {
 		if(key == null || key.isEmpty()) {
