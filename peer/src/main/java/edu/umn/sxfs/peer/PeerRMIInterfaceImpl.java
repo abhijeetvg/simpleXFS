@@ -3,10 +3,12 @@ package edu.umn.sxfs.peer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
 import edu.umn.sxfs.common.fileio.FileMemoryObject;
 import edu.umn.sxfs.common.rmi.PeerRMIInterface;
 import edu.umn.sxfs.common.util.FileIOUtil;
+import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.util.MD5CheckSumUtil;
 import edu.umn.sxfs.peer.file.FileStore;
 
@@ -15,24 +17,32 @@ import edu.umn.sxfs.peer.file.FileStore;
  * @author prashant
  *
  */
-public final class PeerRMIInterfaceImpl implements PeerRMIInterface {
+public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements PeerRMIInterface {
 
+	private static final long serialVersionUID = -4387586179613570710L;
+	private final static String CLASS_NAME = PeerRMIInterfaceImpl.class.getSimpleName(); 
 	private static PeerRMIInterfaceImpl instance = null;
 	private static int load = 0;
 	
 	private static Object loadLock = new Object();
 	
-	private PeerRMIInterfaceImpl() {
+	private PeerRMIInterfaceImpl() throws RemoteException{
 		if(instance != null) {
 			throw new IllegalStateException("Cannot instantiate PeerRMIInterfaceImpl again.");
 		}
 	}
 	
 	public static PeerRMIInterfaceImpl getInstance() {
+		final String method = CLASS_NAME + ".getInstance()";
 		if(instance == null) {
 			synchronized (PeerRMIInterfaceImpl.class) {
 				if(instance == null) {
-					instance = new PeerRMIInterfaceImpl();
+					try {
+						instance = new PeerRMIInterfaceImpl();
+					} catch (RemoteException e) {
+						LogUtil.log(method, "Remote Exception while creating PeerRMIInterfaceImpl. Exiting.");
+						System.exit(1);
+					}
 				}
 			}
 		}
