@@ -1,5 +1,9 @@
 package edu.umn.sxfs.peer.client.cli;
 
+import java.rmi.RemoteException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import edu.umn.sxfs.common.exception.IllegalIPException;
 import edu.umn.sxfs.common.exception.PeerNotConnectedException;
 import edu.umn.sxfs.common.exception.TrackingServerNotConnectedException;
@@ -7,11 +11,6 @@ import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.peer.client.PeerClient;
 import edu.umn.sxfs.peer.client.exceptions.ClientGeneralException;
-
-import java.rmi.RemoteException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  *
