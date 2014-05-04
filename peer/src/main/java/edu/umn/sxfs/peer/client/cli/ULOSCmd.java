@@ -1,11 +1,10 @@
 package edu.umn.sxfs.peer.client.cli;
 
-import edu.umn.sxfs.peer.client.PeerClient;
-import edu.umn.sxfs.peer.client.constants.CommandConstants;
-import edu.umn.sxfs.peer.client.exceptions.ClientGeneralException;
-import edu.umn.sxfs.common.util.LogUtil;
-
 import java.rmi.RemoteException;
+
+import edu.umn.sxfs.common.util.LogUtil;
+import edu.umn.sxfs.peer.client.PeerClient;
+import edu.umn.sxfs.peer.client.exceptions.ClientGeneralException;
 
 /**
  * Update list on Server.

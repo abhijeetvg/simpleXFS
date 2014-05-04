@@ -33,8 +33,6 @@ public class PeerClient {
     private static final String USAGE_HELP = "Usage: <current peer ip> <current peer port> <tracking server ip> " +
             "<tracking server port> <peer_base_dir>";
 
-    private PeerServerInterfaceObject client;
-
     private static PeerClient instance = null;
 
     private PeerClient(){}
@@ -45,10 +43,6 @@ public class PeerClient {
         }
 
         return instance;
-    }
-
-    public void setClient(PeerServerInterfaceObject cli) {
-        this.client = cli;
     }
 
     public PeerServerInterfaceObject getClient() {

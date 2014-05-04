@@ -7,7 +7,6 @@ import edu.umn.sxfs.common.exception.PeerNotConnectedException;
 import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.peer.client.PeerClient;
-import edu.umn.sxfs.peer.client.constants.CommandConstants;
 import edu.umn.sxfs.peer.client.exceptions.ClientGeneralException;
 
 /**
