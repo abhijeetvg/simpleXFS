@@ -57,16 +57,16 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 		if(!FileStore.getInstance().containsFile(filename)) {
 			throw new RemoteException("File : "  + filename +" not found.", new FileNotFoundException());
 		}
-		FileMemoryObject readFile = null;
+		FileMemoryObject readFileMemoryObject = null;
 		try {
-			 readFile = FileIOUtil.readFile(FileStore.getInstance().getFileStoreDirectory() + filename);
+			 readFileMemoryObject = FileIOUtil.readFile(FileStore.getInstance().getFileStoreDirectory() + filename);
 		}catch(IOException ex){
 			throw new RemoteException("IOException", ex);
 		}
 		synchronized (loadLock) {
 			load--;
 		}
-		return readFile;
+		return new FileMemoryObject(filename, readFileMemoryObject.getBytecontents());
 	}
 
 	@Override
