@@ -30,7 +30,8 @@ public class PeerConfig {
 	private static int trackingServerPort;
 	private static String fileStoreDirectory;
 	private static String peerPeerLatencyFile;
-	
+	private static boolean isByzantineMode;
+
 	public static void loadProperties(String filename) throws WrongPropertiesFileFormatException, FileNotFoundException {
 		final String method = CLASS_NAME + ".loadProperties()";
 		InputStream input = null;
@@ -94,12 +95,21 @@ public class PeerConfig {
 			fileStoreDirectory = temp;
 		}
 		
-		// file store directory
+		// peer peer latency file
 		temp = prop.getProperty(PeerPropertiesConstants.PEER_PEER_LATENCY_FILE);
 		if(temp == null || temp.isEmpty()) {
 			throw new WrongPropertiesFileFormatException(PeerPropertiesConstants.PEER_PEER_LATENCY_FILE + " not present.");
 		}else{
 			peerPeerLatencyFile = temp;
+		}
+		
+		// byzantine mode
+		temp = prop.getProperty(PeerPropertiesConstants.BYZANTINE_MODE);
+		if(temp == null || temp.isEmpty()) {
+			LogUtil.log(method, "No Byzantinemode in property file. Setting it to default : " + PeerPropertiesConstants.DEFAULT_BYZANTINE_MODE);
+			isByzantineMode = PeerPropertiesConstants.DEFAULT_BYZANTINE_MODE;
+		}else{
+			isByzantineMode = new Boolean(temp);
 		}
 	}
 
@@ -125,5 +135,9 @@ public class PeerConfig {
 
 	public static String getPeerPeerLatencyFile() {
 		return peerPeerLatencyFile;
+	}
+	
+	public static boolean isByzantineMode() {
+		return isByzantineMode;
 	}
 }

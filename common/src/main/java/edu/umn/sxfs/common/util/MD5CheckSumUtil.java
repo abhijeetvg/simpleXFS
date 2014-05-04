@@ -3,6 +3,7 @@ package edu.umn.sxfs.common.util;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -51,5 +52,10 @@ public class MD5CheckSumUtil {
 
 	public static boolean isEqualCheckSum(byte[] checksum1, byte[] checksum2) {
 		return MessageDigest.isEqual(checksum1, checksum2);
+	}
+	
+	public static String toHex(byte[] bytearray) {
+		BigInteger bi = new BigInteger(1, bytearray);
+	    return String.format("%0" + (bytearray.length << 1) + "X", bi);
 	}
 }

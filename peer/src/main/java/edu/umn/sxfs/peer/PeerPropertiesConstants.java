@@ -14,8 +14,10 @@ public final class PeerPropertiesConstants {
 	public static final String TRACKING_SERVER_PORT = "trackingServerPort";
 	public static final String FILE_STORE_DIRECTORY = "fileStoreDirectory";
 	public static final String PEER_PEER_LATENCY_FILE = "peerPeerLatencyFile";
-	
+	public static final String BYZANTINE_MODE = "byzantineMode";	
 	
 	public static final int DEFAULT_LOAD = 2;
 	public static final String DEFAULT_PEER_ALGORITHM = AlgorithmFactory.BASIC_ALGORITHM;
+	public static final boolean DEFAULT_BYZANTINE_MODE = false;
 }
+

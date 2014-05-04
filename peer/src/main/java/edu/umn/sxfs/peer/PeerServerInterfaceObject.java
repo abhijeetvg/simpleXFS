@@ -56,16 +56,7 @@ public final class PeerServerInterfaceObject {
 	 */
 	public String download(PeerInfo peerInfo, String filename) throws PeerNotConnectedException, TrackingServerNotConnectedException {
 		if(peerInfo == null) {
-			// if peerInfo null decide the peer based on algorithm.
-			PeerClient.printOnShell("PeerInfo is null. Hence will decide the peer based on peer selection algorithm.");
-			Set<PeerInfo> availablePeerInfos = null;
-			try {
-				 availablePeerInfos = Peer.getTrackingServerRMIObjectHandler().find(filename);
-			} catch (RemoteException e) {
-				throw new TrackingServerNotConnectedException("Cannot connect to the tracking server");
-			}
-			peerInfo = AlgorithmFactory.getAlgorithm(PeerConfig.getPeerAlgorithm(), Peer.getCurrentPeerInfo(), availablePeerInfos).getDestinationPeerInfo();
-			PeerClient.printOnShell("Downloading file: " + filename + " from selected peer: " + peerInfo);
+			peerInfo = getPeerInfoFromPeerSelectionAlgorithm(filename);
 		}
 		
 		PeerRMIInterface peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
@@ -104,6 +95,22 @@ public final class PeerServerInterfaceObject {
 		}
 		PeerClient.printOnShell("Done Download");
 		return writeFileCompletePathName;
+	}
+
+	public PeerInfo getPeerInfoFromPeerSelectionAlgorithm(String filename)
+			throws TrackingServerNotConnectedException {
+		PeerInfo peerInfo;
+		// if peerInfo null decide the peer based on algorithm.
+		PeerClient.printOnShell("PeerInfo is null. Hence will decide the peer based on peer selection algorithm.");
+		Set<PeerInfo> availablePeerInfos = null;
+		try {
+			 availablePeerInfos = Peer.getTrackingServerRMIObjectHandler().find(filename);
+		} catch (RemoteException e) {
+			throw new TrackingServerNotConnectedException("Cannot connect to the tracking server");
+		}
+		peerInfo = AlgorithmFactory.getAlgorithm(PeerConfig.getPeerAlgorithm(), Peer.getCurrentPeerInfo(), availablePeerInfos).getDestinationPeerInfo();
+		PeerClient.printOnShell("Downloading file: " + filename + " from selected peer: " + peerInfo);
+		return peerInfo;
 	}
 	
 	public Set<PeerInfo> find (String filename) {
