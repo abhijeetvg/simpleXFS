@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 import edu.umn.sxfs.common.constants.RMIConstants;
+import edu.umn.sxfs.common.rmi.TrackingServer;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.validator.ContentValidator;
 import edu.umn.sxfs.peer.file.FileStore;
@@ -32,7 +33,7 @@ public class Peer {
 	private static int trackingServerRMIPort = RMIConstants.RMI_DEFAULT_PORT;
 	private static String currentPeerIp = null;
 	private static int currentPeerPort = RMIConstants.RMI_DEFAULT_PORT;
-	private static TrackingServerImpl trackingServerRMIObjectHandle = null;
+	private static TrackingServer trackingServerRMIObjectHandle = null;
 	
 	private Peer() {
 		throw new IllegalStateException("Cannot instantiate peer class"); 
@@ -86,7 +87,7 @@ public class Peer {
 		LogUtil.log(method, "Getting the Tracking server object at " + trackingServerIp + ":" + trackingServerRMIPort);
 		
 		try {
-				trackingServerRMIObjectHandle = (TrackingServerImpl) Naming
+				trackingServerRMIObjectHandle = (TrackingServer) Naming
 						.lookup("rmi://"
 								+ trackingServerIp + ":"
 								+ trackingServerRMIPort
@@ -124,7 +125,7 @@ public class Peer {
 		return true;
 	}
 	
-	public static TrackingServerImpl getTrackingServerRMIObjectHandler() {
+	public static TrackingServer getTrackingServerRMIObjectHandler() {
 		return trackingServerRMIObjectHandle;
 	}
 	
