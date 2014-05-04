@@ -8,12 +8,12 @@ public final class PeerPropertiesConstants {
 		throw new IllegalStateException("Cannot instantiate a constants class");
 	}
 	
-	public static final String PEER_ALGORITHM = "Peer Algorithm";
-	public static final String LOAD_THRESHOLD = "Load Threshold";
-	public static final String TRACKING_SERVER_IP = "Tracking Server Ip";
-	public static final String TRACKING_SERVER_PORT = "Tracking Server Port";
-	public static final String FILE_STORE_DIRECTORY = "File Store Directory";
-	public static final String PEER_PEER_LATENCY_FILE = "Peer Peer Latency File";
+	public static final String PEER_ALGORITHM = "peerAlgorithm";
+	public static final String LOAD_THRESHOLD = "loadThreshold";
+	public static final String TRACKING_SERVER_IP = "trackingServerIp";
+	public static final String TRACKING_SERVER_PORT = "trackingServerPort";
+	public static final String FILE_STORE_DIRECTORY = "fileStoreDirectory";
+	public static final String PEER_PEER_LATENCY_FILE = "peerPeerLatencyFile";
 	
 	
 	public static final int DEFAULT_LOAD = 2;
