@@ -5,14 +5,15 @@ import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.umn.sxfs.common.exception.IllegalIPException;
 import edu.umn.sxfs.common.exception.PeerNotConnectedException;
+import edu.umn.sxfs.common.exception.TrackingServerNotConnectedException;
 import edu.umn.sxfs.common.fileio.FileMemoryObject;
 import edu.umn.sxfs.common.rmi.PeerRMIInterface;
 import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.FileIOUtil;
 import edu.umn.sxfs.common.util.MD5CheckSumUtil;
 import edu.umn.sxfs.peer.file.FileStore;
+import edu.umn.sxfs.peer.latency.AlgorithmFactory;
 import edu.umn.sxfs.peer.util.RMIUtil;
 
 /**
@@ -50,11 +51,18 @@ public final class PeerServerInterfaceObject {
 	 * @param filename
 	 * @return
 	 * @throws PeerNotConnectedException 
+	 * @throws TrackingServerNotConnectedException 
 	 */
-	public String download(PeerInfo peerInfo, String filename) throws PeerNotConnectedException {
+	public String download(PeerInfo peerInfo, String filename) throws PeerNotConnectedException, TrackingServerNotConnectedException {
 		if(peerInfo == null) {
-			// TODO prashant use algorithm.. if peerinfo not available.
-			return "HAHAHA NOT IMPLEMENTATION!!";
+			// if peerInfo null decide the peer based on algorithm.
+			Set<PeerInfo> availablePeerInfos = null;
+			try {
+				 availablePeerInfos = Peer.getTrackingServerRMIObjectHandler().find(filename);
+			} catch (RemoteException e) {
+				throw new TrackingServerNotConnectedException("Cannot connect to the tracking server");
+			}
+			peerInfo = AlgorithmFactory.getAlgorithm(PeerConfig.getPeerAlgorithm(), peerInfo, availablePeerInfos).getDestinationPeerInfo();
 		}
 		PeerRMIInterface peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
@@ -83,14 +91,11 @@ public final class PeerServerInterfaceObject {
 		// Add the new file to file store as well as the tracking server.
 		FileStore.getInstance().addFilename(newFileName);
 		try {
-			Peer.getTrackingServerRMIObjectHandler().updateFiles(new PeerInfo(Peer.getIp(), Peer.getPort()), FileStore.getInstance().getFilenames());
+			Peer.getTrackingServerRMIObjectHandler().updateFiles(Peer.getCurrentPeerInfo(), FileStore.getInstance().getFilenames());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IllegalIPException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		return writeFileCompletePathName;
 	}
 	
@@ -113,12 +118,7 @@ public final class PeerServerInterfaceObject {
 		Set<String> filenames = new HashSet<String>();
 		filenames.add(filename);
 		try {
-			try {
-				Peer.getTrackingServerRMIObjectHandler().updateFiles(new PeerInfo(Peer.getIp(), Peer.getPort()), filenames);
-			} catch (IllegalIPException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			Peer.getTrackingServerRMIObjectHandler().updateFiles(Peer.getCurrentPeerInfo(), filenames);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

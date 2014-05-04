@@ -2,6 +2,7 @@ package edu.umn.sxfs.peer.client.cli;
 
 import edu.umn.sxfs.common.exception.IllegalIPException;
 import edu.umn.sxfs.common.exception.PeerNotConnectedException;
+import edu.umn.sxfs.common.exception.TrackingServerNotConnectedException;
 import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.peer.client.PeerClient;
@@ -50,6 +51,8 @@ public class DownloadCmd extends BaseCommand {
 
         } catch (PeerNotConnectedException e) {
             throw new ClientGeneralException(LogUtil.causedBy(e));
+        } catch (TrackingServerNotConnectedException e) {
+        	throw new ClientGeneralException(LogUtil.causedBy(e));
         }
 
         return true;
