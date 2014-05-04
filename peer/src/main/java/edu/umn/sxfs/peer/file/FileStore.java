@@ -63,7 +63,7 @@ public final class FileStore {
 	}
 	
 	public synchronized String getFileStoreDirectory() {
-		return fileStoreDirectory;
+		return fileStoreDirectory + "/";
 	}
 	
 	public synchronized void printStore() {
