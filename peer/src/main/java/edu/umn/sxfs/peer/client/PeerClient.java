@@ -52,7 +52,7 @@ public class PeerClient {
     }
 
     public PeerServerInterfaceObject getClient() {
-        return client;
+        return PeerServerInterfaceObject.getInstance();
     }
 
     void executeCmd(String cmdStr) throws NumberFormatException,
