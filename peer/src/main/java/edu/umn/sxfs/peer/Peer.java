@@ -1,5 +1,7 @@
 package edu.umn.sxfs.peer;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -8,11 +10,14 @@ import java.rmi.registry.LocateRegistry;
 
 import edu.umn.sxfs.common.constants.RMIConstants;
 import edu.umn.sxfs.common.exception.IllegalIPException;
+import edu.umn.sxfs.common.exception.WrongPropertiesFileFormatException;
 import edu.umn.sxfs.common.rmi.TrackingServer;
 import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.validator.ContentValidator;
 import edu.umn.sxfs.peer.file.FileStore;
+import edu.umn.sxfs.peer.latency.PeerPeerLatencyStore;
+import edu.umn.sxfs.peer.latency.WrongPeerLatencyConfigFileException;
 
 /**
  * The starting point for the peer server. 
@@ -30,8 +35,6 @@ import edu.umn.sxfs.peer.file.FileStore;
  */
 public class Peer {
 	private static final String CLASS_NAME = Peer.class.getSimpleName();
-	private static String trackingServerIp = null;
-	private static int trackingServerRMIPort = RMIConstants.RMI_DEFAULT_PORT;
 	private static String currentPeerIp = null;
 	private static int currentPeerPort = RMIConstants.RMI_DEFAULT_PORT;
 	private static TrackingServer trackingServerRMIObjectHandle = null;
@@ -48,11 +51,23 @@ public class Peer {
 	public static boolean start(String[] args) {
 		final String method = CLASS_NAME + ".start()";
 		
-		if(args.length != 5) {
-			LogUtil.log(method, "Usage peer <current peer ip> <current peer port> <tracking server ip> <tracking server port> <local file store>");
+		if(args.length != 3) {
+			LogUtil.log(method, "Usage peer <current peer ip> <current peer port> <properties config file>");
 			return false;
 		}
 
+		try {
+			PeerConfig.loadProperties(args[2]);
+		} catch (FileNotFoundException e2) {
+			LogUtil.log(method, "Got exception " + e2.getMessage()
+					+ ". Exiting.");
+			System.exit(1);
+		} catch (WrongPropertiesFileFormatException e2) {
+			LogUtil.log(method, "Got exception " + e2.getMessage()
+					+ ". Exiting.");
+			System.exit(1);
+		}
+		
 		// Current ip and port
 		if(!ContentValidator.isValidIp(args[0])) {
 			LogUtil.log(method, "Invalid ip:" + args[0]);
@@ -65,33 +80,23 @@ public class Peer {
 		}
 		currentPeerPort = Integer.parseInt(args[1]);
 		
-		// tracking server Ip and port
-		if(!ContentValidator.isValidIp(args[2])) {
-			LogUtil.log(method, "Invalid ip:" + args[2]);
-			return false;
-		}
-		trackingServerIp = args[2];
-
-		if(!ContentValidator.isValidPort(args[3])) {
-			LogUtil.log(method, "Invalid port:" + args[3]);
-			return false;
-		}
-		trackingServerRMIPort = Integer.parseInt(args[3]);
-		
-		LogUtil.log(method, "Initializing fileStore");
-		FileStore.getInstance().initialize(args[4]);
+		String fileStoreDirectory = PeerConfig.getFileStoreDirectory();
+		LogUtil.log(method, "Initializing fileStore: " + fileStoreDirectory);
+		FileStore.getInstance().initialize(fileStoreDirectory);
 		FileStore.getInstance().printStore();
 		LogUtil.log(method, "DONE Initializing fileStore");
 		
 		System.setProperty("java.rmi.server.hostname", currentPeerIp);
 		
-		LogUtil.log(method, "Getting the Tracking server object at " + trackingServerIp + ":" + trackingServerRMIPort);
+		int trackingServerPort = PeerConfig.getTrackingServerPort();
+		String trackingServerIp = PeerConfig.getTrackingServerIp();
+		LogUtil.log(method, "Getting the Tracking server object at " + trackingServerIp + ":" + trackingServerPort);
 		
 		try {
 				trackingServerRMIObjectHandle = (TrackingServer) Naming
 						.lookup("rmi://"
 								+ trackingServerIp + ":"
-								+ trackingServerRMIPort
+								+ trackingServerPort
 								+ "/" + RMIConstants.TRACKING_SERVER_SERVICE);
 		} catch (MalformedURLException e) {
 			LogUtil.log(method, "Got exception " + e.getMessage()
@@ -123,6 +128,19 @@ public class Peer {
 			System.exit(1);
 		}
 		LogUtil.log(method, "DONE Updating initial file list on the server");
+		
+		String peerPeerLatencyFile = PeerConfig.getPeerPeerLatencyFile();
+		LogUtil.log(method, "Initializing Peer-peer latency store from file : " + peerPeerLatencyFile);
+		try {
+			PeerPeerLatencyStore.getInstance().initialize(peerPeerLatencyFile);
+		} catch (IOException e1) {
+			LogUtil.log(method, "Got exception while initializing PeerPeerLatencyStore : " + e1.getMessage() + " Exiting.");
+			System.exit(1);
+		} catch (WrongPeerLatencyConfigFileException e1) {
+			LogUtil.log(method, "Got exception while initializing PeerPeerLatencyStore : " + e1.getMessage() + " Exiting.");
+			System.exit(1);
+		}
+		LogUtil.log(method, "DONE Initializing Peer-peer latency store from file : " + args[5]);
 		
 		LogUtil.log(method, "Binding the current peer to RMI at " + currentPeerIp + ":" + currentPeerPort);
 		try {
