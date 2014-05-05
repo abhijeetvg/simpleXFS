@@ -36,14 +36,27 @@ public class LoadLatencyAlgorithm extends BaseAlgorithm {
 
     @Override
     public PeerInfo getDestinationPeerInfo() {
-        PeerClient.printOnShell("Selecting peer for : " + getPeerInfo() + "to download file.");
+        PeerInfo currentPeerInfo = getPeerInfo();
+        if(currentPeerInfo == null) {
+        	return null;
+        }
+		PeerClient.printOnShell("Selecting peer for : " + currentPeerInfo + "to download file.");
         Set<PeerInfo> availablePeerInfos = getAvailablePeerInfos();
-        Map<PeerInfo, Long> latencies = PeerPeerLatencyStore.getInstance().getLatencies(getPeerInfo());
+        if(availablePeerInfos == null || availablePeerInfos.isEmpty()) {
+        	return null;
+        }
+        Map<PeerInfo, Long> latencies = PeerPeerLatencyStore.getInstance().getLatencies(currentPeerInfo);
+        if(latencies == null) {
+        	return null;
+        }
         Long lowestLatency = Long.MAX_VALUE;
         PeerInfo minLatencyPeerInfo = null, minLoadedPeer = null;
         int minLoad = Integer.MAX_VALUE;
         for (PeerInfo peerInfo : availablePeerInfos) {
             Long currentLatency = latencies.get(peerInfo);
+            if(currentLatency == null) {
+            	continue;
+            }
             try {
 
                 int load = PeerClient.getInstance().getClient().getLoad(peerInfo);

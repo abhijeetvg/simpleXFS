@@ -19,13 +19,27 @@ public final class BasicAlgorithm extends BaseAlgorithm {
 
 	@Override
 	public PeerInfo getDestinationPeerInfo() {
-		PeerClient.printOnShell("Selecting peerinfo for : " + getPeerInfo());
+		PeerInfo currentPeerInfo = getPeerInfo();
+		if(currentPeerInfo == null) {
+			return null;
+		}
+		PeerClient.printOnShell("Selecting peerinfo for : " + currentPeerInfo);
 		Set<PeerInfo> availablePeerInfos = getAvailablePeerInfos();
-		Map<PeerInfo, Long> latencies = PeerPeerLatencyStore.getInstance().getLatencies(getPeerInfo());
+		if(availablePeerInfos == null || availablePeerInfos.isEmpty()) {
+			return null;
+		}
+		Map<PeerInfo, Long> latencies = PeerPeerLatencyStore.getInstance().getLatencies(currentPeerInfo);
+		if(latencies == null) {
+			return null;
+		}
 		Long lowestLatency = Long.MAX_VALUE;
 		PeerInfo minLatencyPeerInfo = null;
 		for (PeerInfo peerInfo : availablePeerInfos) {
-			Long currentLatency = latencies.get(peerInfo);
+			Long latency = latencies.get(peerInfo);
+			if(latency == null) {
+				continue;
+			}
+			Long currentLatency = latency;
 			if(currentLatency < lowestLatency) {
 				lowestLatency = currentLatency;
 				minLatencyPeerInfo = peerInfo;

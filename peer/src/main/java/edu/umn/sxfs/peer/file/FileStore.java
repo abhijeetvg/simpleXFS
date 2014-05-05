@@ -36,6 +36,7 @@ public final class FileStore {
 	
 	public synchronized void initialize(String srcDirectoryStr) {
 		final String method = CLASS_NAME + ".initialize()";
+		filenames.clear();
 		fileStoreDirectory = srcDirectoryStr;
 		File srcDirectory = new File(fileStoreDirectory);
 		

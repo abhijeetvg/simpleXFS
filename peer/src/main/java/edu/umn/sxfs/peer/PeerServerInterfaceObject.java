@@ -58,6 +58,9 @@ public final class PeerServerInterfaceObject {
 		if(peerInfo == null) {
 			peerInfo = getPeerInfoFromPeerSelectionAlgorithm(filename);
 		}
+		if(peerInfo == null) {
+			throw new PeerNotConnectedException("Cannot decide peerInfo for file : " + filename);
+		}
 		
 		PeerRMIInterface peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {
