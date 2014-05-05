@@ -19,7 +19,6 @@ public final class PeriodicUpdateListThread implements Callable<Boolean> {
 	public Boolean call() throws Exception {
 		while(true) {
 			Thread.sleep(UPDATE_INTERVAL);
-			PeerClient.printOnShell("Updating the file list on server.");
 			FileStore.getInstance().initialize(PeerConfig.getFileStoreDirectory());
 			try {
 				Peer.getTrackingServerRMIObjectHandler().updateFiles(Peer.getCurrentPeerInfo(), FileStore.getInstance()
