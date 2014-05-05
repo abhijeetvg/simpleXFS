@@ -160,7 +160,7 @@ public class DownloadCmd extends BaseCommand {
 			            LogUtil.info("Majority set is " + majorityPeerInfoSet);
 			            if(majorityPeerInfoSet.contains(destinationPeerInfo)) {
 			            	LogUtil.info("The file from PeerInfo:" + destinationPeerInfo + " is having the checksum in the majority. So, we have the right file.");
-			            	continue;
+			            	break;
 			            }
 			            LogUtil.info("The file from PeerInfo:" + destinationPeerInfo + " is NOT having the checksum in the majority.");
 			            LogUtil.info("Downloading the file again from majority peer");
