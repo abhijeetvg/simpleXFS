@@ -35,12 +35,10 @@ public class DownloadCmd extends BaseCommand {
     private static final int FILE_NAME_ARG = 1;
     private static final int PEER_PORT_ARG = 3;
     private static final int PEER_IP_ARG = 2;
-    private static boolean isCheckSum = false;
     private static final ExecutorService service = Executors.newFixedThreadPool(100); 
 
-    public DownloadCmd(String cmd, boolean isCheckSum) {
+    public DownloadCmd(String cmd) {
         super(cmd);
-        DownloadCmd.isCheckSum = isCheckSum;
     }
 
     @Override
@@ -87,25 +85,19 @@ public class DownloadCmd extends BaseCommand {
 					
 					LogUtil.info("\nFile downloaded: " + client.download(destinationPeerInfo, filename));
 		            
-		            if(isCheckSum) {
-		            	PeerClient.printOnShell("Matching checksums now.");
-		            	byte[] localCheckSum = client.getCheckSum(null, filename);
-		            	byte[] remoteCheckSum = client.getCheckSum(destinationPeerInfo, filename);
-		            	if(!MD5CheckSumUtil.isEqualCheckSum(localCheckSum, remoteCheckSum)) {
-		            		PeerClient.printOnShell("CheckSum check failed. Please Download again from this or different peer.");
-				            PeerClient.printOnShell("Download failed for (" + filename + ")");
-				            return;
-		            	}else{
-		            		PeerClient.printOnShell("CheckSum check Successful.");
-		            		long time =  (long)((System.nanoTime() - start)/Math.pow(10,6));
-				            String message = "Download successful for (" + filename + ") in " + time + "ms";
-				            PeerClient.printOnShell(message);
-		            	}
-		            }else {
-		            	long time =  (long)((System.nanoTime() - start)/Math.pow(10,6));
+	            	PeerClient.printOnShell("Matching checksums now.");
+	            	byte[] localCheckSum = client.getCheckSum(null, filename);
+	            	byte[] remoteCheckSum = client.getCheckSum(destinationPeerInfo, filename);
+	            	if(!MD5CheckSumUtil.isEqualCheckSum(localCheckSum, remoteCheckSum)) {
+	            		PeerClient.printOnShell("CheckSum check failed. Please Download again from this or different peer.");
+			            PeerClient.printOnShell("Download failed for (" + filename + ")");
+			            return;
+	            	}else{
+	            		PeerClient.printOnShell("CheckSum check Successful.");
+	            		long time =  (long)((System.nanoTime() - start)/Math.pow(10,6));
 			            String message = "Download successful for (" + filename + ") in " + time + "ms";
 			            PeerClient.printOnShell(message);
-		            }
+	            	}
 		            
 		            if(!PeerConfig.isByzantineMode()) {
 		            	return;

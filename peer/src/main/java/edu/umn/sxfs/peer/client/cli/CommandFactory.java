@@ -14,7 +14,6 @@ import edu.umn.sxfs.peer.client.exceptions.IllegalCommandException;
 public class CommandFactory {
 
 	private static final String FIND_PREFIX = "find";
-	private static final String DOWNLOAD_AND_CHECK_CHECKSUM_PREFIX = "downloadandchecksum";
 	private static final String DOWNLOAD_PREFIX = "download";
 	private static final String CHECKSUM_PREFIX = "getchecksum";
     private static final String LOAD_PREFIX = "getload";
@@ -26,7 +25,7 @@ public class CommandFactory {
 		String prefix = StringUtil.getCmdPrefix(cmd).trim();
 
 		if (prefix.equalsIgnoreCase(DOWNLOAD_PREFIX)) {
-			return new DownloadCmd(cmd,false);
+			return new DownloadCmd(cmd);
 		} else if (prefix.equalsIgnoreCase(FIND_PREFIX)) {
 			return new FindCmd(cmd);
 		} else if (prefix.equalsIgnoreCase(CHECKSUM_PREFIX)) {
@@ -35,8 +34,6 @@ public class CommandFactory {
 			return new LoadCmd(cmd);
 		} else if (prefix.equalsIgnoreCase(ULOS_PREFIX)) {
             return new ULOSCmd(cmd);
-        } else if (prefix.equalsIgnoreCase(DOWNLOAD_AND_CHECK_CHECKSUM_PREFIX)) {
-        	return new DownloadCmd(cmd, true);
         }
 		
 		throw new IllegalCommandException(prefix + " " 
