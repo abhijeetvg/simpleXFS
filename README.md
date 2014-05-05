@@ -33,11 +33,11 @@ help on any of the cs machines in the lab:
      PROJ_HOME/dist/target/bulletinboard-1.0-SNAPSHOT.tar.gz
 
 # Peer client usage:
-a. Find(filename): finds peers on which the file is present. Internally used, provided interface through client to test the functionality. Usage: find <filename>
+  a. Find(filename): finds peers on which the file is present. Internally used, provided interface through client to test the functionality. Usage: find <filename>
    Returns list of servers that contain this file. Empty set if file not present anywhere.
-b. updateList(peerInfo, set<files>): updates the file list at the server for the peer. Internally used, provided interface through client to test the functionality. Usage: updatelist [peer_host] [peer_port]. This is also called periodically.
+  b. updateList(peerInfo, set<files>): updates the file list at the server for the peer. Internally used, provided interface through client to test the functionality. Usage: updatelist [peer_host] [peer_port]. This is also called periodically.
    Does not return anything. Please check server log to verify if the list was updated.
-c. download(filename): downloads an authentic (checks checksum) file. Internally emulates latency, updates file list on server. Usage: download [peer_ip] [peer_host] filename. (peer_ip and peer_host are optional and can be used for testing purposes)
+  c. download(filename): downloads an authentic (checks checksum) file. Internally emulates latency, updates file list on server. Usage: download [peer_ip] [peer_host] filename. (peer_ip and peer_host are optional and can be used for testing purposes)
    Returns the file path where the file was downloaded.
-d. GetLoad(server): returns an integer, the number threads running on the server. Internally used, provided interface through client to test the functionality. Usage: getload peer_host peer_port.
-e. getchecksum(filename): return checksum for the specified file. Internally used, provided interface through client to test the functionality. Usage: getchecksum filename.
+  d. GetLoad(server): returns an integer, the number threads running on the server. Internally used, provided interface through client to test the functionality. Usage: getload peer_host peer_port.
+  e. getchecksum(filename): return checksum for the specified file. Internally used, provided interface through client to test the functionality. Usage: getchecksum filename.

@@ -14,9 +14,9 @@ Test cases for simpleXFS.
 		ii. Invalid server_port
 		iii. Invalid load_threshold
 		iv. Invalid peerAlgorithm (This errors out): Error is not displayed, but the execution ends gracefully.
-		v. Invalid fileStoreDir: Does not err out.
+		v. Invalid fileStoreDir: Does not exist, not a directory, null or empty.
 		vi. Invalid peerLatencyfile: does not exist
-		vii. Invalid byzantineMode: Is not validated currently on startup.
+		vii. Invalid byzantineMode: Other value than true or false. Defaults to false if not true, does not error out.
 	e. A positive test case
 
 3. Client (see README for usage):
