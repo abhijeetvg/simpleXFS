@@ -203,6 +203,18 @@ public final class PeerServerInterfaceObject {
 		}
 	}
 	
+	public void removePeer(PeerInfo peerInfo) {
+		while(true) {
+			try {
+				Peer.getTrackingServerRMIObjectHandler().removeDeadNode(peerInfo);
+			} catch (RemoteException e) {
+				Peer.refreshConnectionToTrackingServer();
+				continue;
+			}
+			break;
+		}
+	}
+	
 	/**
 	 * Returns the load on server.
 	 * @param peerInfo
