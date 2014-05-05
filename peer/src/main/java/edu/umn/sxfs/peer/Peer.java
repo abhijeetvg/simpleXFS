@@ -190,6 +190,7 @@ public class Peer {
 			LogUtil.log(method, "Got exception while initializing PeerPeerLatencyStore : " + e1.getMessage() + " Exiting.");
 			System.exit(1);
 		}
+		PeerPeerLatencyStore.getInstance().printLatencies();
 		LogUtil.log(method, "DONE Initializing Peer-peer latency store from file : " + peerPeerLatencyFile);
 	}
 
