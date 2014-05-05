@@ -74,9 +74,7 @@ public final class PeerServerInterfaceObject {
 		try {
 			 downloadedFileMemoryObject = peerRMIInterfaceImplObject.download(Peer.getCurrentPeerInfo(), filename);
 		} catch (RemoteException e) {
-			// TODO Depending on the cause of RemoteException throw appropriate exception or return false.
-			e.printStackTrace();
-			return null;
+			throw new PeerNotConnectedException("Peer not connected");
 		}
 		String newFileName = downloadedFileMemoryObject.getFilename();
 		String writeFileCompletePathName = FileStore.getInstance().getFileStoreDirectory() + newFileName;
@@ -96,8 +94,7 @@ public final class PeerServerInterfaceObject {
 		try {
 			Peer.getTrackingServerRMIObjectHandler().updateFiles(Peer.getCurrentPeerInfo(), FileStore.getInstance().getFilenames());
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new TrackingServerNotConnectedException("Tracking server not connected.");
 		}
 		PeerClient.printOnShell("Done Download");
 		return writeFileCompletePathName;

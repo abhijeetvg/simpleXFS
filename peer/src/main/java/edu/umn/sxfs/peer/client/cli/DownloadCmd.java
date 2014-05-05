@@ -76,11 +76,13 @@ public class DownloadCmd extends BaseCommand {
 			            }else {
 			            	destinationPeerInfo = client.getPeerInfoFromPeerSelectionAlgorithm(filename);
 			            	if(destinationPeerInfo == null) {
-			            		LogUtil.info("Cannot select peer to download file. Try again.");	
+			            		LogUtil.info("Cannot select peer to download file. Try again.");
+			            		return;
 			            	}
 			            }
 			            if(Peer.getCurrentPeerInfo().equals(destinationPeerInfo)) {
-			            	LogUtil.info("Please give a different peer ip and port for download");	
+			            	LogUtil.info("Please give a different peer ip and port for download");
+			            	return;
 			            }
 			            LogUtil.info("Downloading : (" + filename + ")  from peer:" + destinationPeerInfo);
 			            
@@ -88,10 +90,9 @@ public class DownloadCmd extends BaseCommand {
 						try {
 							LogUtil.info("\nFile downloaded: " + client.download(destinationPeerInfo, filename));
 						} catch (PeerNotConnectedException e2) {
-							PeerClient.printOnShell(destinationPeerInfo + " down. Removing it from tracking server.");
-							client.removePeer(destinationPeerInfo);
-							PeerClient.printOnShell(destinationPeerInfo + " down. Please try again.");
-							break;
+							handlePeerNotFoundException(destinationPeerInfo,
+									client);
+							continue;
 						}
 			            
 		            	PeerClient.printOnShell("Matching checksums now.");
@@ -106,14 +107,13 @@ public class DownloadCmd extends BaseCommand {
 						try {
 							remoteCheckSum = client.getCheckSum(destinationPeerInfo, filename);
 						} catch (PeerNotConnectedException e1) {
-							PeerClient.printOnShell(destinationPeerInfo + " down. Removing it from tracking server.");
-							client.removePeer(destinationPeerInfo);
-							PeerClient.printOnShell(destinationPeerInfo + " down. Please try again.");
-							break;
+							handlePeerNotFoundException(destinationPeerInfo,
+									client);
+							continue;
 						}
 		            	if(!MD5CheckSumUtil.isEqualCheckSum(localCheckSum, remoteCheckSum)) {
 		            		PeerClient.printOnShell("CheckSum check failed. Please Download again from this or different peer.");
-				            PeerClient.printOnShell("Download failed for (" + filename + ")");
+				            PeerClient.printOnShell("Download failed for (" + filename + "). Please try again.");
 				            return;
 		            	}else{
 		            		PeerClient.printOnShell("CheckSum check Successful.");
@@ -137,7 +137,8 @@ public class DownloadCmd extends BaseCommand {
 			            		 checkSum = client.getCheckSum(peerInfo, filename);
 			            	}
 							catch (PeerNotConnectedException ex) {
-								LogUtil.info(ex.getMessage());
+								handlePeerNotFoundException(destinationPeerInfo,
+										client);
 								continue;
 							}
 							String hex = MD5CheckSumUtil.toHex(checkSum);
@@ -159,7 +160,7 @@ public class DownloadCmd extends BaseCommand {
 			            LogUtil.info("Majority set is " + majorityPeerInfoSet);
 			            if(majorityPeerInfoSet.contains(destinationPeerInfo)) {
 			            	LogUtil.info("The file from PeerInfo:" + destinationPeerInfo + " is having the checksum in the majority. So, we have the right file.");
-			            	return;
+			            	continue;
 			            }
 			            LogUtil.info("The file from PeerInfo:" + destinationPeerInfo + " is NOT having the checksum in the majority.");
 			            LogUtil.info("Downloading the file again from majority peer");
@@ -170,10 +171,9 @@ public class DownloadCmd extends BaseCommand {
 			            try {
 							LogUtil.info("\nFile downloaded: " + client.download(majorityDestinationPeerInfo, filename));
 						} catch (PeerNotConnectedException e1) {
-							PeerClient.printOnShell(destinationPeerInfo + " down. Removing it from tracking server.");
-							client.removePeer(destinationPeerInfo);
-							PeerClient.printOnShell(destinationPeerInfo + " down. Please try again.");
-							break;
+							handlePeerNotFoundException(destinationPeerInfo,
+									client);
+							continue;
 						}
 			            
 						
@@ -181,10 +181,9 @@ public class DownloadCmd extends BaseCommand {
 						try {
 							client.mendFile(destinationPeerInfo, filename);
 						} catch (PeerNotConnectedException e) {
-							PeerClient.printOnShell(destinationPeerInfo + " down. Removing it from tracking server.");
-							client.removePeer(destinationPeerInfo);
-							PeerClient.printOnShell(destinationPeerInfo + " down. Please try again.");
-							break;
+							handlePeerNotFoundException(destinationPeerInfo,
+									client);
+							continue;
 						}
 						LogUtil.info("\nDONE Sending correct file to PeerInfo + " + destinationPeerInfo);
 						String message = "Download successful for (" + filename + ") from " + majorityDestinationPeerInfo;
@@ -192,12 +191,21 @@ public class DownloadCmd extends BaseCommand {
 			        } catch (TrackingServerNotConnectedException e) {
 			        	LogUtil.info("Lost connection to Tracking Server. Reconnecting.");
 			        	Peer.refreshConnectionToTrackingServer();
+			        	LogUtil.info("Connected to tracking server. Retrying download.");
 			        	continue;
 			        } catch (FileNotFoundException e) {
 			        	throw new ClientGeneralException(LogUtil.causedBy(e));
 			        }
 					break;
 				}
+			}
+
+			public void handlePeerNotFoundException(
+					PeerInfo destinationPeerInfo,
+					PeerServerInterfaceObject client) {
+				PeerClient.printOnShell(destinationPeerInfo + " down. Removing it from tracking server.");
+				client.removePeer(destinationPeerInfo);
+				PeerClient.printOnShell("Removed dead peer info : " + destinationPeerInfo + ".Retrying.");
 			}
 		};
 		
