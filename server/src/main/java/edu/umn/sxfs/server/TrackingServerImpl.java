@@ -50,7 +50,6 @@ public class TrackingServerImpl extends UnicastRemoteObject implements TrackingS
 				System.exit(1);
 			}
         }
-
         return instance;
     }
 
@@ -75,4 +74,11 @@ public class TrackingServerImpl extends UnicastRemoteObject implements TrackingS
         metaData.remove(peerInfo);
         metaData.put(peerInfo, files);
     }
+
+	@Override
+	public synchronized void removeDeadNode(PeerInfo deadPeerInfo) throws RemoteException {
+		final String method = CLASS_NAME + ".removeDeadNode()";
+    	LogUtil.log(method, "Removinf dead PeerInfo: " + deadPeerInfo);
+        metaData.remove(deadPeerInfo);
+	}
 }

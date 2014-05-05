@@ -7,6 +7,8 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import edu.umn.sxfs.common.constants.RMIConstants;
 import edu.umn.sxfs.common.exception.IllegalIPException;
@@ -26,8 +28,7 @@ import edu.umn.sxfs.peer.latency.WrongPeerLatencyConfigFileException;
  * <ul>
  * 		<li>Current Peer Ip.</li>
  * 		<li>Current Peer Port.</li>
- *      <li>Tracking server ip.</li>
- *      <li>Tracking server RMI port.</li>
+ *      <li>Properties Config file</li>
  * </ul>
  * 
  * @author prashant
@@ -37,6 +38,7 @@ public class Peer {
 	private static final String CLASS_NAME = Peer.class.getSimpleName();
 	private static PeerInfo currentPeerInfo = null;
 	private static TrackingServer trackingServerRMIObjectHandle = null;
+	private static boolean isInitialized = false;
 	
 	private Peer() {
 		throw new IllegalStateException("Cannot instantiate peer class"); 
@@ -50,6 +52,10 @@ public class Peer {
 	public static boolean start(String[] args) {
 		final String method = CLASS_NAME + ".start()";
 		
+		if(isInitialized) {
+			LogUtil.log(method, "Peer already initialized.");
+			return false;
+		}
 		if(args.length != 3) {
 			LogUtil.log(method, "Usage peer <current peer ip> <current peer port> <properties config file>");
 			return false;
@@ -68,7 +74,16 @@ public class Peer {
 		updateFilesOnTrackingServer();
 		
 		bind();
+		
+		startPeriodicFileListUpdateThread();
+		
+		isInitialized = true;
 		return true;
+	}
+
+	private static void startPeriodicFileListUpdateThread() {
+		ExecutorService service = Executors.newSingleThreadExecutor();
+		service.submit(new PeriodicUpdateListThread());
 	}
 
 	private static void initializeCurrentPeerInfo(String[] args) {

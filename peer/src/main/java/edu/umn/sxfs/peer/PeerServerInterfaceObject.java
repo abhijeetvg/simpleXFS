@@ -174,6 +174,31 @@ public final class PeerServerInterfaceObject {
 	 * @return
 	 * @throws PeerNotConnectedException 
 	 */
+	public void mendFile(PeerInfo peerInfo, String filename) throws PeerNotConnectedException {
+		FileMemoryObject readFile = null;
+		try {
+			readFile = FileIOUtil.readFile(FileStore.getInstance().getFileStoreDirectory() + filename);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		PeerRMIInterface peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
+		if(peerRMIInterfaceImplObject == null) {
+			throw new PeerNotConnectedException("cannot connect to Peer: " + peerInfo);
+		}
+		try {
+			peerRMIInterfaceImplObject.mendFile(readFile);
+		} catch (RemoteException e) {
+			// TODO Depending on the cause of RemoteException throw appropriate exception or return false.
+		}
+	}
+	
+	/**
+	 * Returns the load on server.
+	 * @param peerInfo
+	 * @return
+	 * @throws PeerNotConnectedException 
+	 */
 	public int getLoad(PeerInfo peerInfo) throws PeerNotConnectedException {
 		PeerRMIInterface peerRMIInterfaceImplObject = RMIUtil.getPeerRMIInterfaceImplObject(peerInfo.getIp(), peerInfo.getPort());
 		if(peerRMIInterfaceImplObject == null) {

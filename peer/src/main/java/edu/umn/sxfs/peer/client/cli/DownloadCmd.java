@@ -35,6 +35,7 @@ public class DownloadCmd extends BaseCommand {
     private static final int PEER_PORT_ARG = 3;
     private static final int PEER_IP_ARG = 2;
     private static boolean isCheckSum = false;
+    private static final ExecutorService service = Executors.newFixedThreadPool(100); 
 
     public DownloadCmd(String cmd, boolean isCheckSum) {
         super(cmd);
@@ -76,7 +77,7 @@ public class DownloadCmd extends BaseCommand {
 		            LogUtil.info("Downloading : (" + filename + ")  on peer:" + destinationPeerInfo);
 		            
 					
-					LogUtil.info("\n\nFile downloaded: " + client.download(destinationPeerInfo, filename));
+					LogUtil.info("\nFile downloaded: " + client.download(destinationPeerInfo, filename));
 		            
 		            if(isCheckSum) {
 		            	PeerClient.printOnShell("Matching checksums now.");
@@ -129,12 +130,15 @@ public class DownloadCmd extends BaseCommand {
 		            LogUtil.info("Downloading the file again from majority peer");
 		            
 		            List<PeerInfo> majorityPeerInfoList = new ArrayList<PeerInfo>(majorityPeerInfoSet);
-		            destinationPeerInfo = majorityPeerInfoList.get(0);
-		            LogUtil.info("Downloading : (" + filename + ")  on peer:" + destinationPeerInfo);
+		            PeerInfo majorityDestinationPeerInfo = majorityPeerInfoList.get(0);
+		            LogUtil.info("Downloading : (" + filename + ")  on peer:" + majorityDestinationPeerInfo);
 		            
 					
-					LogUtil.info("\n\nFile downloaded: " + client.download(destinationPeerInfo, filename));
-					String message = "Download successful for (" + filename + ") from " + destinationPeerInfo;
+					LogUtil.info("\nSending correct file to PeerInfo + " + destinationPeerInfo);
+					client.mendFile(destinationPeerInfo, filename);
+					LogUtil.info("\nDONE Sending correct file to PeerInfo + " + destinationPeerInfo);
+					LogUtil.info("\nFile downloaded: " + client.download(majorityDestinationPeerInfo, filename));
+					String message = "Download successful for (" + filename + ") from " + majorityDestinationPeerInfo;
 			        PeerClient.printOnShell(message);
 		        } catch (PeerNotConnectedException e) {
 		            throw new ClientGeneralException(LogUtil.causedBy(e));
@@ -144,9 +148,7 @@ public class DownloadCmd extends BaseCommand {
 			}
 		};
 		
-		ExecutorService service = Executors.newFixedThreadPool(100);
 		service.submit(task);
-
         return true;
     }
     

@@ -36,5 +36,9 @@ public interface TrackingServer extends Remote {
      * @throws RemoteException
      */
     void updateFiles(PeerInfo peerInfo, Set<String> files) throws RemoteException;
-
+    
+    /**
+     * If any node goes down other node can notify the server about this.
+     */
+    void removeDeadNode(PeerInfo deadPeerInfo) throws RemoteException;
 }

@@ -19,8 +19,8 @@ import edu.umn.sxfs.peer.latency.PeerPeerLatencyStore;
  * @author prashant
  *
  */
-public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements PeerRMIInterface {
 
+public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements PeerRMIInterface {
 	private static final long serialVersionUID = -4387586179613570710L;
 	private final static String CLASS_NAME = PeerRMIInterfaceImpl.class.getSimpleName(); 
 	private static PeerRMIInterfaceImpl instance = null;
@@ -66,7 +66,7 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 		} catch (InterruptedException e) {
 			throw new RemoteException("Got interrupetedException while waiting.",e);
 		}
-		LoadCounter.getLoad().increaseLoad();
+		LoadCounter.getLoad().decreaseLoad();
 		return new FileMemoryObject(filename, readFileMemoryObject.getBytecontents());
 	}
 
@@ -83,5 +83,17 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 		} catch (IOException e) {
 			throw new RemoteException("Got IOException", e);
 		}
+	}
+
+	@Override
+	public void mendFile(FileMemoryObject correctFile) throws RemoteException {
+		LoadCounter.getLoad().increaseLoad();
+		FileMemoryObject writeFileMemoryObject = new FileMemoryObject(PeerConfig.getFileStoreDirectory() + correctFile.getFilename(), correctFile.getBytecontents());
+		try {
+			FileIOUtil.writeToDisk(writeFileMemoryObject);
+		} catch (IOException e) {
+			throw new RemoteException("Got IOException", e);
+		}
+		LoadCounter.getLoad().decreaseLoad();
 	}
 }

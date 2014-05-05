@@ -42,5 +42,12 @@ public interface PeerRMIInterface extends Remote{
 	 * @return
 	 * @throws RemoteException
 	 */
-	public byte[] getChecksum(String filename) throws RemoteException; 
+	public byte[] getChecksum(String filename) throws RemoteException;
+	
+	/**
+	 * Replaces the local file with correct file
+	 * @param correctFile
+	 * @throws RemoteException
+	 */
+	public void mendFile(FileMemoryObject correctFile) throws RemoteException;
 }
