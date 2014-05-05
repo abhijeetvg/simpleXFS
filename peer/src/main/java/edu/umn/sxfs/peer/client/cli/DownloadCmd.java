@@ -168,7 +168,7 @@ public class DownloadCmd extends BaseCommand {
 			            PeerInfo majorityDestinationPeerInfo = majorityPeerInfoList.get(0);
 			            LogUtil.info("Downloading : (" + filename + ")  from peer:" + majorityDestinationPeerInfo);
 			            try {
-							LogUtil.info("\nFile downloaded: " + client.download(destinationPeerInfo, filename));
+							LogUtil.info("\nFile downloaded: " + client.download(majorityDestinationPeerInfo, filename));
 						} catch (PeerNotConnectedException e1) {
 							PeerClient.printOnShell(destinationPeerInfo + " down. Removing it from tracking server.");
 							client.removePeer(destinationPeerInfo);
