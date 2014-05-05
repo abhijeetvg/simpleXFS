@@ -80,7 +80,7 @@ public class DownloadCmd extends BaseCommand {
 		            if(Peer.getCurrentPeerInfo().equals(destinationPeerInfo)) {
 		            	LogUtil.info("Please give a different peer ip and port for download");	
 		            }
-		            LogUtil.info("Downloading : (" + filename + ")  on peer:" + destinationPeerInfo);
+		            LogUtil.info("Downloading : (" + filename + ")  from peer:" + destinationPeerInfo);
 		            
 					
 					LogUtil.info("\nFile downloaded: " + client.download(destinationPeerInfo, filename));

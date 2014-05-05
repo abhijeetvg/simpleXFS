@@ -39,10 +39,13 @@ public final class RMIUtil {
 							+ port + "/"
 							+ RMIConstants.PEER_SERVICE);
 		} catch (MalformedURLException e) {
+			e.printStackTrace();
 			return null;
 		} catch (RemoteException e) {
+			e.printStackTrace();
 			return null;
 		} catch (NotBoundException e) {
+			e.printStackTrace();
 			return null;
 		}
 		return peerObject;
