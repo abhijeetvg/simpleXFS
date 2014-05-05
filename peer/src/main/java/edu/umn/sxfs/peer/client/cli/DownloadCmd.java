@@ -139,19 +139,19 @@ public class DownloadCmd extends BaseCommand {
 		            
 		            List<PeerInfo> majorityPeerInfoList = new ArrayList<PeerInfo>(majorityPeerInfoSet);
 		            PeerInfo majorityDestinationPeerInfo = majorityPeerInfoList.get(0);
-		            LogUtil.info("Downloading : (" + filename + ")  on peer:" + majorityDestinationPeerInfo);
+		            LogUtil.info("Downloading : (" + filename + ")  from peer:" + majorityDestinationPeerInfo);
 		            
 					
 					LogUtil.info("\nSending correct file to PeerInfo + " + destinationPeerInfo);
 					client.mendFile(destinationPeerInfo, filename);
 					LogUtil.info("\nDONE Sending correct file to PeerInfo + " + destinationPeerInfo);
-					LogUtil.info("\nFile downloaded: " + client.download(majorityDestinationPeerInfo, filename));
 					String message = "Download successful for (" + filename + ") from " + majorityDestinationPeerInfo;
 					PeerClient.printOnShell(message);
 		        } catch (PeerNotConnectedException e) {
 		            throw new ClientGeneralException(LogUtil.causedBy(e));
 		        } catch (TrackingServerNotConnectedException e) {
-		        	throw new ClientGeneralException(LogUtil.causedBy(e));
+		        	LogUtil.info("Lost connection to Tracking Server. Reconnecting.");
+		        	Peer.refreshConnectionToTrackingServer();
 		        } catch (FileNotFoundException e) {
 		        	throw new ClientGeneralException(LogUtil.causedBy(e));
 		        }
@@ -177,9 +177,9 @@ public class DownloadCmd extends BaseCommand {
 		@Override
 		public int compare(Set<PeerInfo> arg0, Set<PeerInfo> arg1) {
 			if(arg0.size() > arg1.size()) {
-				return 1;
+				return -1;
 			}
-			return -1;
+			return 1;
 		}
     }
 }

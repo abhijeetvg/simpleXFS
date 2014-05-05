@@ -3,7 +3,6 @@ package edu.umn.sxfs.peer;
 import java.rmi.RemoteException;
 import java.util.concurrent.Callable;
 
-import edu.umn.sxfs.peer.client.PeerClient;
 import edu.umn.sxfs.peer.file.FileStore;
 
 /**
@@ -24,7 +23,7 @@ public final class PeriodicUpdateListThread implements Callable<Boolean> {
 				Peer.getTrackingServerRMIObjectHandler().updateFiles(Peer.getCurrentPeerInfo(), FileStore.getInstance()
 						.getFilenames());
 			} catch (RemoteException e1) {
-				PeerClient.printOnShell("Got remoteexception while updating files on server. Will try again.");
+				//PeerClient.printOnShell("Got remoteexception while updating files on server. Will try again.");
 				continue;
 			} 
 		}

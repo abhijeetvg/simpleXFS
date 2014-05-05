@@ -163,6 +163,48 @@ public class Peer {
 		LogUtil.log(method, "DONE getting the trackingServerObject");
 	}
 
+	public static void refreshConnectionToTrackingServer() {
+		System.setProperty("java.rmi.server.hostname", currentPeerInfo.getIp());
+		int trackingServerPort = PeerConfig.getTrackingServerPort();
+		String trackingServerIp = PeerConfig.getTrackingServerIp();
+		
+		while(true) {
+			try {
+					trackingServerRMIObjectHandle = (TrackingServer) Naming
+							.lookup("rmi://"
+									+ trackingServerIp + ":"
+									+ trackingServerPort
+									+ "/" + RMIConstants.TRACKING_SERVER_SERVICE);
+			} catch (MalformedURLException e) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				continue;
+			} catch (RemoteException e) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				continue;
+			} catch (NotBoundException e) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				continue;
+			}
+			break;
+		}
+	}
+
+	
 	private static void updateFilesOnTrackingServer() {
 		final String method = CLASS_NAME + ".updateFilesOnTrackingServer()";
 		LogUtil.log(method, "Updating initial file list on the server");
