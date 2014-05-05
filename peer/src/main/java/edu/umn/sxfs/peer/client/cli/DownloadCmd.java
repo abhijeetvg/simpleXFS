@@ -153,7 +153,8 @@ public class DownloadCmd extends BaseCommand {
     }
     
     private void exceptionHandler(ClientGeneralException ex) {
-    	LogUtil.info("Exception while downloading file:" +ex.getCause());
+    	LogUtil.info("Exception while downloading file:");
+    	ex.printStackTrace();
     }
     
     /**
