@@ -32,9 +32,9 @@ NOTE: Check only positive scenarios for all except c below as these are internal
 	
 5. Fault tolerance
 	a. File corruption: Corrupt a file (by manually modifying it from outside the system). 
-	Expected: corrected file is downloaded from other peer and is sent to the peer from which corrupted file was downloaded. No need to tell the server as the corrupted file is corrected.
+	Expected: User is notified and asked to perform the operation again.
 	b. Byzantine failure: Incorrect file download. (test for true and false scenario)
-	Expected: Download the correct file in case of Byzantine failures. This does not notify the peers that contain the incorrect files.
+	Expected: corrected file is downloaded from other peer and is sent to the peer from which corrupted file was downloaded. No need to tell the server as the corrupted file is corrected.
 	c. Server crashes: restart the server
 	All peers can start making the requests once the server is up. All peers periodically (say t) send the data to the peer, in such a way it creates its state again. There will be some delay (maximum t) during which the data at server will be stale in the beginning after restart. This is an issue currently.
 	d. peer crashes (fail-stop): kill any one of the peers.
@@ -44,4 +44,5 @@ NOTE: Check only positive scenarios for all except c below as these are internal
 	a. Peer down, retries?
 	b. Failed to find a file, retries?
 	
-7. Download a file that server peer has. It does not download and warns.
+7. Download a file that server peer has.
+    Expected: The file is replaced. This is because user should be able to replace any corrupt file.
