@@ -1,6 +1,7 @@
 package edu.umn.sxfs.peer;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
@@ -105,12 +106,7 @@ public final class PeerServerInterfaceObject {
 		PeerInfo peerInfo;
 		// if peerInfo null decide the peer based on algorithm.
 		PeerClient.printOnShell("PeerInfo is null. Hence will decide the peer based on peer selection algorithm.");
-		Set<PeerInfo> availablePeerInfos = null;
-		try {
-			 availablePeerInfos = Peer.getTrackingServerRMIObjectHandler().find(filename);
-		} catch (RemoteException e) {
-			throw new TrackingServerNotConnectedException("Cannot connect to the tracking server");
-		}
+		Set<PeerInfo> availablePeerInfos = find(filename);
 		peerInfo = AlgorithmFactory.getAlgorithm(PeerConfig.getPeerAlgorithm(), Peer.getCurrentPeerInfo(), availablePeerInfos).getDestinationPeerInfo();
 		PeerClient.printOnShell("Downloading file: " + filename + " from selected peer: " + peerInfo);
 		return peerInfo;
@@ -118,10 +114,18 @@ public final class PeerServerInterfaceObject {
 	
 	public Set<PeerInfo> find (String filename) {
 		try {
-			return Peer.getTrackingServerRMIObjectHandler().find(filename);
+			Set<PeerInfo> availablePeerInfos = Peer.getTrackingServerRMIObjectHandler().find(filename);
+			if(availablePeerInfos == null) {
+				return new HashSet<PeerInfo>();
+			}
+			FileMetaDataCache.getInstance().updatePeerInfos(filename, availablePeerInfos);
+			return availablePeerInfos;
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Throwable cause = e.getCause();
+			if(cause instanceof ConnectException) {
+				PeerClient.printOnShell("Cannot connect to TrackingServer. Returning list from local cache.");
+				return FileMetaDataCache.getInstance().find(filename);
+			}
 		}
 		return new HashSet<PeerInfo>();
 	}
