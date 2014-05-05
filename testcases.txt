@@ -13,10 +13,10 @@ Test cases for simpleXFS.
 		i. Invalid server_ip
 		ii. Invalid server_port
 		iii. Invalid load_threshold
-		iv. Invalid peerAlgorithm
-		v. Invalid fileStoreDir
+		iv. Invalid peerAlgorithm (This errors out): Error is not displayed, but the execution ends gracefully.
+		v. Invalid fileStoreDir: Does not err out.
 		vi. Invalid peerLatencyfile: does not exist
-		vii. Invalid peerLatencyfile: file not in format specified
+		vii. Invalid byzantineMode: Is not validated currently on startup.
 	e. A positive test case
 
 3. Client (see README for usage):
@@ -33,7 +33,7 @@ NOTE: Check only positive scenarios for all except c below as these are internal
 5. Fault tolerance
 	a. File corruption: Corrupt a file (by manually modifying it from outside the system). 
 	Expected: corrected file is downloaded from other peer and is sent to the peer from which corrupted file was downloaded. No need to tell the server as the corrupted file is corrected.
-	b. Byzantine failure: Incorrect file download.
+	b. Byzantine failure: Incorrect file download. (test for true and false scenario)
 	Expected: Download the correct file in case of Byzantine failures. This does not notify the peers that contain the incorrect files.
 	c. Server crashes: restart the server
 	All peers can start making the requests once the server is up. All peers periodically (say t) send the data to the peer, in such a way it creates its state again. There will be some delay (maximum t) during which the data at server will be stale in the beginning after restart. This is an issue currently.
@@ -45,5 +45,3 @@ NOTE: Check only positive scenarios for all except c below as these are internal
 	b. Failed to find a file, retries?
 	
 7. Download a file that server peer has. It does not download and warns.
-	
-	

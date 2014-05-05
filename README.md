@@ -3,15 +3,15 @@ simpleXFS
 
 A simple peer to peer, serverless FS based on classic xFS concept.
 
-Authors:
-Abhijeet Gaikwad (Student id: 4934921)
-Prashant Chaudhary (Student id: 4922579)
+# Authors:
+* Abhijeet Gaikwad (Student id: 4934921)
+* Prashant Chaudhary (Student id: 4922579)
 
-How to Run:
+# How to Run:
 Extract the bin tar(simpleXFS-1.0-SNAPSHOT-bin) provided in the deliverable. And start the following components:
-Server
+* Server
 java -cp ./peer-1.0-SNAPSHOT.jar:./server-1.0-SNAPSHOT.jar:./common-1.0-SNAPSHOT.jar edu.umn.sxfs.server.Server <current_ip> <current_port>
-Peer
+* Peer
 java -cp ./peer-1.0-SNAPSHOT.jar:./server-1.0-SNAPSHOT.jar:./common-1.0-SNAPSHOT.jar edu.umn.sxfs.peer.client.PeerClient <current_ip> <current_port> conf/simpleXFSflute.properties
     Properties file contains:
     server_ip: Tracking server ip.
@@ -22,7 +22,7 @@ java -cp ./peer-1.0-SNAPSHOT.jar:./server-1.0-SNAPSHOT.jar:./common-1.0-SNAPSHOT
     peerLatencyfile: The configuration file containing peer latencies. Format: ip_port,ip_port,latency.
     byzantineMode: true or false, executes byzantine failure accordingly.
 
-Building:
+# Building:
 This project was built using maven, hopefully you will not have to build as we developed
 in Java and providing already compiled Jars. In case you will have to, these steps will
 help on any of the cs machines in the lab:
@@ -32,7 +32,7 @@ help on any of the cs machines in the lab:
   5. Build is created in this dir: PROJ_HOME/dist/target/simpleXFS-1.0-SNAPSHOT/ or
      PROJ_HOME/dist/target/bulletinboard-1.0-SNAPSHOT.tar.gz
 
-Peer client usage:
+# Peer client usage:
 a. Find(filename): finds peers on which the file is present. Internally used, provided interface through client to test the functionality. Usage: find <filename>
    Returns list of servers that contain this file. Empty set if file not present anywhere.
 b. updateList(peerInfo, set<files>): updates the file list at the server for the peer. Internally used, provided interface through client to test the functionality. Usage: updatelist [peer_host] [peer_port]. This is also called periodically.
