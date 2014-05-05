@@ -129,6 +129,9 @@ public class DownloadCmd extends BaseCommand {
 			            Map<String, Set<PeerInfo>> checkSumPeerInfosMap = new TreeMap<String, Set<PeerInfo>>(); 
 			            Set<PeerInfo> availablePeers = client.find(filename);
 			            for (PeerInfo peerInfo : availablePeers) {
+			            	if(peerInfo.equals(Peer.getCurrentPeerInfo())) {
+			            		continue;
+			            	}
 			            	byte[] checkSum = null;
 			            	try {
 			            		 checkSum = client.getCheckSum(peerInfo, filename);
@@ -146,12 +149,14 @@ public class DownloadCmd extends BaseCommand {
 								checkSumPeerInfosMap.put(hex, peerInfos);
 							}
 						}
+			            LogUtil.info("Hex map " + checkSumPeerInfosMap);
 			            // Sort the map according to the set size so as to get the majority
 			            List<Set<PeerInfo>> list = new ArrayList<Set<PeerInfo>>();
 			            list.addAll(checkSumPeerInfosMap.values());
 			            Collections.sort(list, new SetSizeComparator());
 			            
 			            Set<PeerInfo> majorityPeerInfoSet = list.get(0);
+			            LogUtil.info("Majority set is " + majorityPeerInfoSet);
 			            if(majorityPeerInfoSet.contains(destinationPeerInfo)) {
 			            	LogUtil.info("The file from PeerInfo:" + destinationPeerInfo + " is having the checksum in the majority. So, we have the right file.");
 			            	return;
