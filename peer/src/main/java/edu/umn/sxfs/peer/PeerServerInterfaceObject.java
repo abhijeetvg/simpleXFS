@@ -1,5 +1,6 @@
 package edu.umn.sxfs.peer;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.rmi.RemoteException;
@@ -54,8 +55,9 @@ public final class PeerServerInterfaceObject {
 	 * @return
 	 * @throws PeerNotConnectedException 
 	 * @throws TrackingServerNotConnectedException 
+	 * @throws FileNotFoundException 
 	 */
-	public String download(PeerInfo peerInfo, String filename) throws PeerNotConnectedException, TrackingServerNotConnectedException {
+	public String download(PeerInfo peerInfo, String filename) throws PeerNotConnectedException, TrackingServerNotConnectedException, FileNotFoundException {
 		if(peerInfo == null) {
 			peerInfo = getPeerInfoFromPeerSelectionAlgorithm(filename);
 		}
@@ -102,11 +104,14 @@ public final class PeerServerInterfaceObject {
 	}
 
 	public PeerInfo getPeerInfoFromPeerSelectionAlgorithm(String filename)
-			throws TrackingServerNotConnectedException {
+			throws TrackingServerNotConnectedException, FileNotFoundException {
 		PeerInfo peerInfo;
 		// if peerInfo null decide the peer based on algorithm.
 		PeerClient.printOnShell("PeerInfo is null. Hence will decide the peer based on peer selection algorithm.");
 		Set<PeerInfo> availablePeerInfos = find(filename);
+		if(availablePeerInfos == null || availablePeerInfos.isEmpty()) {
+			throw new FileNotFoundException("File not found any peers");
+		}
 		peerInfo = AlgorithmFactory.getAlgorithm(PeerConfig.getPeerAlgorithm(), Peer.getCurrentPeerInfo(), availablePeerInfos).getDestinationPeerInfo();
 		PeerClient.printOnShell("Downloading file: " + filename + " from selected peer: " + peerInfo);
 		return peerInfo;

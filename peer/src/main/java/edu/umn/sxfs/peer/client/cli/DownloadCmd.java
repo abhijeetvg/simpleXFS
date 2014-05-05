@@ -1,5 +1,6 @@
 package edu.umn.sxfs.peer.client.cli;
 
+import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,7 +107,14 @@ public class DownloadCmd extends BaseCommand {
 		            Map<String, Set<PeerInfo>> checkSumPeerInfosMap = new TreeMap<String, Set<PeerInfo>>(); 
 		            Set<PeerInfo> availablePeers = client.find(filename);
 		            for (PeerInfo peerInfo : availablePeers) {
-						byte[] checkSum = client.getCheckSum(peerInfo, filename);
+		            	byte[] checkSum = null;
+		            	try {
+		            		 checkSum = client.getCheckSum(peerInfo, filename);
+		            	}
+						catch (PeerNotConnectedException ex) {
+							LogUtil.info(ex.getMessage());
+							continue;
+						}
 						String hex = MD5CheckSumUtil.toHex(checkSum);
 						if(checkSumPeerInfosMap.containsKey(hex)) {
 							checkSumPeerInfosMap.get(hex).add(peerInfo);
@@ -143,6 +151,8 @@ public class DownloadCmd extends BaseCommand {
 		        } catch (PeerNotConnectedException e) {
 		            throw new ClientGeneralException(LogUtil.causedBy(e));
 		        } catch (TrackingServerNotConnectedException e) {
+		        	throw new ClientGeneralException(LogUtil.causedBy(e));
+		        } catch (FileNotFoundException e) {
 		        	throw new ClientGeneralException(LogUtil.causedBy(e));
 		        }
 			}
