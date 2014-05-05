@@ -132,14 +132,12 @@ public final class PeerServerInterfaceObject {
 	
 	/**
 	 * Updates the metadata on the server for this server.
-	 * @param filename
 	 * @return
 	 */
-	public boolean updateListOnServer(String filename) {
-		Set<String> filenames = new HashSet<String>();
-		filenames.add(filename);
+	public boolean updateListOnServer() {
 		try {
-			Peer.getTrackingServerRMIObjectHandler().updateFiles(Peer.getCurrentPeerInfo(), filenames);
+			Peer.getTrackingServerRMIObjectHandler().updateFiles(Peer.getCurrentPeerInfo()
+                    , FileStore.getInstance().getFilenames());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

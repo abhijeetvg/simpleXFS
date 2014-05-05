@@ -15,8 +15,6 @@ public class ULOSCmd extends BaseCommand {
 
     private static final String CLASS_NAME = ULOSCmd.class.getSimpleName();
 
-    private static final int FILE_NAME_ARG = 1;
-
     public ULOSCmd(String cmd) {
         super(cmd);
     }
@@ -27,7 +25,7 @@ public class ULOSCmd extends BaseCommand {
         final String method = CLASS_NAME + ".execute()";
 
         LogUtil.log(method, "Update list on servers: " + PeerClient.getInstance().getClient()
-                .updateListOnServer(getArgument(FILE_NAME_ARG)));
+                .updateListOnServer());
         return true;
     }
 }
