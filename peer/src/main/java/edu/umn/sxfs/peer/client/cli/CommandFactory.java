@@ -34,8 +34,7 @@ public class CommandFactory {
 		} else if (prefix.equalsIgnoreCase(LOAD_PREFIX)) {
 			return new LoadCmd(cmd);
 		} else if (prefix.equalsIgnoreCase(ULOS_PREFIX)) {
-			// TODO this not updalelist  
-            return new DownloadCmd(cmd,false);
+            return new ULOSCmd(cmd);
         } else if (prefix.equalsIgnoreCase(DOWNLOAD_AND_CHECK_CHECKSUM_PREFIX)) {
         	return new DownloadCmd(cmd, true);
         }
