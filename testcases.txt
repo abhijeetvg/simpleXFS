@@ -1,0 +1,49 @@
+Test cases for simpleXFS.
+
+1. Start server, check each parameters (ip, host)
+	a. Invalid ip (-ve)
+	b. Invalid host (-ve)
+	c. Positive test case
+
+2. Start peer,check each parameter (ip, port, config_file)
+	a. Invalid ip
+	b. Invalid port
+	c. Invalid config_file (does not exist)
+	d. config file properties (server_ip, server_port, load_threshold, peerAlgorithm, fileStoreDir, peerLatencyfile)
+		i. Invalid server_ip
+		ii. Invalid server_port
+		iii. Invalid load_threshold
+		iv. Invalid peerAlgorithm
+		v. Invalid fileStoreDir
+		vi. Invalid peerLatencyfile: does not exist
+		vii. Invalid peerLatencyfile: file not in format specified
+	e. A positive test case
+
+3. Client (see README for usage):
+NOTE: Check only positive scenarios for all except c below as these are internally used (so will be passed valid inputs) and not for interaction with the user. These are only used for unit testing purposes and may be fragile. These functionalities work well in the scenarios required as per the specification.
+	a. find filename
+	b. updateList
+	c. download peer_ip peer_host filename: 
+	d. getload peer_ip peer_host: 
+	e. getchecksum filename:
+
+4. Peer selection:
+	The algorithm is described in the design. This tests if the algorithm works successfully in all scenarios.
+	
+5. Fault tolerance
+	a. File corruption: Corrupt a file (by manually modifying it from outside the system). 
+	Expected: corrected file is downloaded from other peer and is sent to the peer from which corrupted file was downloaded. No need to tell the server as the corrupted file is corrected.
+	b. Byzantine failure: Incorrect file download.
+	Expected: Download the correct file in case of Byzantine failures. This does not notify the peers that contain the incorrect files.
+	c. Server crashes: restart the server
+	All peers can start making the requests once the server is up. All peers periodically (say t) send the data to the peer, in such a way it creates its state again. There will be some delay (maximum t) during which the data at server will be stale in the beginning after restart. This is an issue currently.
+	d. peer crashes (fail-stop): kill any one of the peers.
+	Expected: Once a peer is down, notify the server and error out.
+	
+6. Retries
+	a. Peer down, retries?
+	b. Failed to find a file, retries?
+	
+7. Download a file that server peer has. It does not download and warns.
+	
+	
