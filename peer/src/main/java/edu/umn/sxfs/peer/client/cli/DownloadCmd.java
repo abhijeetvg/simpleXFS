@@ -19,6 +19,7 @@ import edu.umn.sxfs.common.server.PeerInfo;
 import edu.umn.sxfs.common.util.LogUtil;
 import edu.umn.sxfs.common.util.MD5CheckSumUtil;
 import edu.umn.sxfs.peer.LoadCounter;
+import edu.umn.sxfs.peer.Peer;
 import edu.umn.sxfs.peer.PeerConfig;
 import edu.umn.sxfs.peer.PeerServerInterfaceObject;
 import edu.umn.sxfs.peer.client.PeerClient;
@@ -54,6 +55,7 @@ public class DownloadCmd extends BaseCommand {
 				} catch (ClientGeneralException e) {
 					exceptionHandler(e);
 				}
+		        PeerClient.printOnShell("");
 		        LoadCounter.getLoad().decreaseLoad();
 			}
 
@@ -73,6 +75,12 @@ public class DownloadCmd extends BaseCommand {
 		                }
 		            }else {
 		            	destinationPeerInfo = client.getPeerInfoFromPeerSelectionAlgorithm(filename);
+		            	if(destinationPeerInfo == null) {
+		            		LogUtil.info("Cannot select peer to download file. Try again.");	
+		            	}
+		            }
+		            if(Peer.getCurrentPeerInfo().equals(destinationPeerInfo)) {
+		            	LogUtil.info("Please give a different peer ip and port for download");	
 		            }
 		            LogUtil.info("Downloading : (" + filename + ")  on peer:" + destinationPeerInfo);
 		            
@@ -139,7 +147,7 @@ public class DownloadCmd extends BaseCommand {
 					LogUtil.info("\nDONE Sending correct file to PeerInfo + " + destinationPeerInfo);
 					LogUtil.info("\nFile downloaded: " + client.download(majorityDestinationPeerInfo, filename));
 					String message = "Download successful for (" + filename + ") from " + majorityDestinationPeerInfo;
-			        PeerClient.printOnShell(message);
+					PeerClient.printOnShell(message);
 		        } catch (PeerNotConnectedException e) {
 		            throw new ClientGeneralException(LogUtil.causedBy(e));
 		        } catch (TrackingServerNotConnectedException e) {

@@ -78,7 +78,7 @@ public class TrackingServerImpl extends UnicastRemoteObject implements TrackingS
 	@Override
 	public synchronized void removeDeadNode(PeerInfo deadPeerInfo) throws RemoteException {
 		final String method = CLASS_NAME + ".removeDeadNode()";
-    	LogUtil.log(method, "Removinf dead PeerInfo: " + deadPeerInfo);
+    	LogUtil.log(method, "Removing dead PeerInfo: " + deadPeerInfo);
         metaData.remove(deadPeerInfo);
 	}
 }
