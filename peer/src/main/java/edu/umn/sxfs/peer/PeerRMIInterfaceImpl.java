@@ -71,7 +71,13 @@ public final class PeerRMIInterfaceImpl extends UnicastRemoteObject implements P
 	}
 
 	@Override
-	public int getLoad() throws RemoteException {
+	public synchronized int getLoad() throws RemoteException {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
 		return LoadCounter.getLoad().value();
 	}
 
