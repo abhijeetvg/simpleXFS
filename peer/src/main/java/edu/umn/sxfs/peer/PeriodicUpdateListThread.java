@@ -24,6 +24,7 @@ public final class PeriodicUpdateListThread implements Callable<Boolean> {
 						.getFilenames());
 			} catch (RemoteException e1) {
 				//PeerClient.printOnShell("Got remoteexception while updating files on server. Will try again.");
+				Peer.refreshConnectionToTrackingServer();
 				continue;
 			} 
 		}
