@@ -20,29 +20,43 @@ Test cases for simpleXFS.
 	e. A positive test case
 
 3. Client (see README for usage):
-NOTE: Check only positive scenarios for all except c below as these are internally used (so will be passed valid inputs) and not for interaction with the user. These are only used for unit testing purposes and may be fragile. These functionalities work well in the scenarios required as per the specification.
+NOTE: Check only positive scenarios for all except c below as these are internally used for testing only (so will be passed valid inputs, no negatives) and not for interaction with the user. These are only used for unit testing purposes and may be fragile. These functionalities work well in the scenarios required as per the specification.
 	a. find filename
-	b. updateList
-	c. download peer_ip peer_host filename: 
-	d. getload peer_ip peer_host: 
-	e. getchecksum filename:
+	b. updatelist
+	c. download peer_ip peer_host filename
+	d. getload peer_ip peer_host
+	e. getchecksum peer_ip peer_host filename
 
 4. Peer selection:
 	The algorithm is described in the design. This tests if the algorithm works successfully in all scenarios.
-	
+	Steps:
+	1. Keep load_threshold in properties file as 2.
+	2. Run three peers (Peer1, Peer2, Peer3) such that latency for Peer1-Peer2 < Peer2-Peer3.
+	3. Keep a file x.txt on two peers (Peer1 and Peer3).
+	4. Run two downloads simultaneously on Peer1.
+	5. From Peer2, ask for x.txt while Peer1 is loaded.
+	6. File will be downloaded from Peer3 even though Peer1-Peer2 latency is less as Peer1 is loaded. Console displays the IP of the machine which sent the file.
+
 5. Fault tolerance
-	a. File corruption: Corrupt a file (by manually modifying it from outside the system). 
+	a. File corruption: Corrupt a file (by manually modifying it from outside the system). This is tested as - file is changed at source peer while it is being downloaded. It is made sure file is changed quickly, make sure to have big latency between those peers.
 	Expected: User is notified and asked to perform the operation again.
-	b. Byzantine failure: Incorrect file download. (test for true and false scenario)
+	b. Byzantine failure: Incorrect file download. (test for true and false scenario).
 	Expected: corrected file is downloaded from other peer and is sent to the peer from which corrupted file was downloaded. No need to tell the server as the corrupted file is corrected.
 	c. Server crashes: restart the server
-	All peers can start making the requests once the server is up. All peers periodically (say t) send the data to the peer, in such a way it creates its state again. There will be some delay (maximum t) during which the data at server will be stale in the beginning after restart. This is an issue currently.
-	d. peer crashes (fail-stop): kill any one of the peers.
-	Expected: Once a peer is down, notify the server and error out.
+	All peers can start making the requests once the server is up. All peers periodically (t = 5s) send the data to the peer, in such a way it creates its state again. There will be some time (maximum 5s) during which the data at server will be stale in the beginning after restart. 
+	d. peer crashes (fail-stop): kill any one of the peers. While the download is going on kill the peer from which it was downloading. The current peer will notify tracking server and server will remove the information about the dead node and automatically retry the download.
+	Expected: Once a peer is down, notify the server and retry the download.
 	
 6. Retries
-	a. Peer down, retries?
-	b. Failed to find a file, retries?
+	a. Peer down: Operation is retried.
+	b. Failed to find a file: User should manually retry with the correct file name.
 	
-7. Download a file that server peer has.
+7. Download a file that peer already has.
     Expected: The file is replaced. This is because user should be able to replace any corrupt file.
+
+Optional features testing:
+1. Optional feature Byzantine failure: File is directly corrected in the peer. This is tested Byzantine failures above.
+2. Tracking Server crashes: Peers have the cached information about the files and can use the information to download the file from the other peers.
+Steps: Kill tracking server, Do find file on one of the peers that has previously cached (or used find command).
+3. Peer should notify the server of a dead node. This is tested in Peer crashes above.
+4. We have made the design extensible for peer selection algorithms. We have two algorithms currently, which are configurable. The second one (apart from the one described in Design doc) is basic and selects the peer with the lowest latency irrespective of load. This can be configured by changing ‘peerAlgorithm’ property in properties file.
